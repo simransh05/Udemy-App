@@ -53,13 +53,12 @@ function Login() {
 
         try {
             const res = await api.postLogin(formData);
-            console.log(res)
 
             localStorage.setItem(
                 "login-info",
-                JSON.stringify({
-                    user: res.data.exist,
-                })
+                JSON.stringify(
+                    res.data.exist
+                )
             );
             navigate("/");
         } catch (err) {

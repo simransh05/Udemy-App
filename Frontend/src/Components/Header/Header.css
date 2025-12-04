@@ -1,0 +1,22 @@
+.container{
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+    border-bottom: 1px solid grey;
+}
+
+.initials{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    background-color: grey;
+    color: black;
+    border: 1px solid black;
+}
+
+.link-info Link{
+    text-decoration: none;
+}
