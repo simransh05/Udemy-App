@@ -1,0 +1,16 @@
+.slide-info {
+    width: 95%;
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: auto;
+}
+
+.slide-info img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+}

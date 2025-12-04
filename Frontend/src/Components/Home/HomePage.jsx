@@ -6,17 +6,28 @@ import SubHeader from '../SubHead/SubHeader';
 import Cards from '../Cards/Cards';
 import Slider from "react-slick";
 import { useEffect } from 'react';
+import Slide1 from '../Slides/Slide1';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slide2 from '../Slides/Slide2';
 function HomePage() {
     const { isLogin, setIsLogin } = useContext(loginContext);
+
+    const categories = [
+        { name: "Development", sub: ["Web Development", "Mobile Development", "Game Development"] },
+        { name: "Business", sub: ["Entrepreneurship", "Communication", "Management"] },
+        { name: "Finance & Accounting", sub: ["Accounting & Bookkeeping", "Finance", "Investing & Trading"] },
+    ];
 
     const settings = {
         dots: true,
         infinite: true,
         speed: 500,
         autoplay: true,
-        autoplaySpeed: 2000,
-        slidesToShow: 3,
+        autoplaySpeed: 8000,
+        slidesToShow: 1,
         slidesToScroll: 1,
+        arrows: true,
     };
 
     useEffect(() => {
@@ -28,21 +39,29 @@ function HomePage() {
 
     return (
         <div>
-            <Header />
+            <Header categories={categories}/>
 
-            {/* every explore have a route when u click any the route become the data  */}
-
-            {/* iflogin then the expore content in the menu type on hover draw down menu */}
-            {isLogin && <SubHeader />}
+            {isLogin && <SubHeader categories={categories}/>}
 
             {/* slider */}
-            <Slider {...settings}>
-                {/* all the slides */}
-            </Slider>
+            <div className="container-slider" style={{
+                width: '100%',
+                overflow: 'hidden',
+                padding: '20px 0',
+            }}>
+                <Slider {...settings}>
+                    {/* all the slides */}
+                    <Slide1 />
+                    <Slide2 />
+                    <Slide1 />
+                    <Slide2 />
+                    <Slide1 />
+                </Slider>
+            </div>
 
             {/* if login then the content also trending how it check by rating */}
             {isLogin && <Cards />}
-        </div>
+        </div >
     )
 }
 

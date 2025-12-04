@@ -7,6 +7,10 @@ import { useState } from 'react'
 import Teach from './Components/Teach/Teach'
 import Cart from './Components/Cart/Cart'
 import MainRoute from './Components/Routers/MainRoute'
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
+import './App.css'
+import MyLearning from './Components/Learning/MyLearning'
 
 export const loginContext = createContext();
 
@@ -23,6 +27,7 @@ function App() {
             <Route path='/signup' element={<Signup />} />
             <Route path='/teach' element={<Teach />} />
             <Route path='/cart' element={<Cart />} />
+            <Route path='/my-learning' element={<MyLearning />} />
           </Routes>
         </Router>
       </loginContext.Provider>
