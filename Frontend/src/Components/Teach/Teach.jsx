@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Box,
   Button,
@@ -10,124 +10,173 @@ import {
   InputLabel,
   Select
 } from "@mui/material";
+import { Link } from "react-router-dom";
+import { categoryContext, loginContext } from "../../App";
 
 function Teach() {
-  const [thumbnail, setThumbnail] = useState(null);
-  const [courseType, setCourseType] = useState("");
-  const [subType, setSubType] = useState("");
+  const { categories } = useContext(categoryContext);
+  const { isLogin } = useContext(loginContext);
+  const [formData, setFormData] = useState({
+    thumbnail: null,
+    title: "",
+    category: "",
+    subCategory: "",
+    price: ""
+  });
 
-  const handleThumbnailChange = (e) => {
-    setThumbnail(e.target.files[0]);
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+
+    if (name === "thumbnail") {
+      setFormData((prev) => ({ ...prev, thumbnail: files[0] }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+
+    if (name === "category") {
+      setFormData((prev) => ({ ...prev, subCategory: "" }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = {
-      thumbnail,
-      title: e.target.title.value,
-      courseType,
-      subType,
-      price: e.target.price.value,
-    };
+    try {
+      const data = new FormData();
+      data.append("thumbnail", formData.thumbnail);
+      if (isLogin) {
+        const user = JSON.parse(localStorage.getItem('login-info'))
+        data.append("userId", user?.id);
+      }
 
-    console.log("FORM SUBMITTED: ", formData);
+
+      const entireData = {
+        title,
+        category: category.toLowerCase(),
+        subCategory: subCategorytoLowerCase().replace(/ /g, "-"),
+        price,
+        data
+      }
+
+      const res = await api.postCard(entireData);
+
+      console.log("Course Created:", res.data);
+      alert("Course Successfully Created!");
+    } catch (error) {
+      console.error(error);
+      alert("Error while creating course!");
+    }
   };
 
   return (
-    <Box
-      sx={{
-        maxWidth: 500,
-        margin: "auto",
-        mt: 4,
-        p: 3,
-        borderRadius: 2,
-        boxShadow: 3,
-        bgcolor: "#fff",
-      }}
-    >
-      <Typography variant="h5" fontWeight="bold" mb={2}>
-        Create a Course
-      </Typography>
+    <>
+      <Box
+        sx={{
+          maxWidth: 500,
+          margin: "auto",
+          mt: 4,
+          p: 3,
+          borderRadius: 2,
+          boxShadow: 3,
+          bgcolor: "#fff",
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold" mb={2}>
+          Create a Course
+        </Typography>
 
-      <form onSubmit={handleSubmit}>
-        {/* preview of the photo will be shown */}
-        <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
-          Upload Thumbnail
-          <input type="file" hidden onChange={handleThumbnailChange} />
-        </Button>
-        {thumbnail && (
-          <Typography variant="body2" mb={1}>
-            Selected: {thumbnail.name}
-          </Typography>
-        )}
+        <form onSubmit={handleSubmit}>
+          <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
+            Upload Thumbnail Photo
+            <input
+              type="file"
+              hidden
+              accept="image/*"
+              name="thumbnail"
+              onChange={handleChange}
+            />
+          </Button>
+          {formData.thumbnail && (
+            <Typography variant="body2" mb={1}>
+              Selected: {formData.thumbnail.name}
+            </Typography>
+          )}
 
-        <TextField
-          name="title"
-          label="Course Title"
-          variant="outlined"
-          fullWidth
-          required
-          sx={{ mb: 2 }}
-        />
-
-        <FormControl fullWidth sx={{ mb: 2 }}>
-          <InputLabel>Course Type</InputLabel>
-          <Select
-            value={courseType}
-            label="Course Type"
-            onChange={(e) => setCourseType(e.target.value)}
-            required
-          >
-            <MenuItem value="development">Development</MenuItem>
-            <MenuItem value="business">Business</MenuItem>
-          </Select>
-        </FormControl>
-
-        {courseType === "development" && (
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Sub Type (Language)</InputLabel>
-            <Select
-              value={subType}
-              label="Sub Type"
-              onChange={(e) => setSubType(e.target.value)}
-              required
-            >
-              <MenuItem value="javascript">JavaScript</MenuItem>
-              <MenuItem value="python">Python</MenuItem>
-              <MenuItem value="java">Java</MenuItem>
-              <MenuItem value="cpp">C++</MenuItem>
-              <MenuItem value="react">React</MenuItem>
-            </Select>
-          </FormControl>
-        )}
-
-        <TextField
-          name="price"
-          label="Price"
-          type="number"
-          variant="outlined"
-          fullWidth
-          required
-          sx={{ mb: 3 }}
-        />
-
-        <Stack direction="row" spacing={2}>
-          <Button
-            type="button"
+          <TextField
+            name="title"
+            label="Course Title"
             variant="outlined"
             fullWidth
-            onClick={() => window.history.back()}
-          >
-            Back
-          </Button>
+            required
+            sx={{ mb: 2 }}
+            value={formData.title}
+            onChange={handleChange}
+          />
 
-          <Button type="submit" variant="contained" fullWidth>
-            Submit
-          </Button>
-        </Stack>
-      </form>
-    </Box>
+          <FormControl fullWidth sx={{ mb: 2 }}>
+            <InputLabel>Category</InputLabel>
+            <Select
+              name="category"
+              value={formData.category}
+              label="Category"
+              onChange={handleChange}
+              required
+            >
+              {categories.map((c) => (
+                <MenuItem key={c.name} value={c.name}>
+                  {c.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          {formData.category && (
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Sub Category</InputLabel>
+              <Select
+                name="subCategory"
+                value={formData.subCategory}
+                label="Sub Category"
+                onChange={handleChange}
+                required
+              >
+                {categories
+                  .find((c) => c.name === formData.category)
+                  ?.sub.map((sub) => (
+                    <MenuItem key={sub} value={sub}>
+                      {sub}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          )}
+
+          <TextField
+            name="price"
+            label="Price"
+            type="number"
+            variant="outlined"
+            fullWidth
+            required
+            sx={{ mb: 3 }}
+            value={formData.price}
+            onChange={handleChange}
+          />
+
+          <Stack direction="row" spacing={2}>
+
+            <Button type="submit" variant="contained" fullWidth>
+              Submit
+            </Button>
+          </Stack>
+        </form>
+      </Box>
+
+      <Button>
+        <Link to="/">Home</Link>
+      </Button>
+    </>
   );
 }
+
 export default Teach;

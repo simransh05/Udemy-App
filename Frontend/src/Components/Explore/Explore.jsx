@@ -1,19 +1,29 @@
 import React, { useState } from "react";
 import { Box, Button, MenuItem } from "@mui/material";
+import { Link } from "react-router-dom";
+
 
 function Explore({ categories }) {
     const [open, setOpen] = useState(false);
     const [currentSubList, setCurrentSubList] = useState([]);
+    const [currentCategory, setCurrentCategory] = useState(null);
 
     const handleOpenMenu = () => {
         setOpen(true);
-        setCurrentSubList([]); 
+        setCurrentSubList([]);
+        setCurrentCategory(null);
     };
 
     const handleCloseMenu = () => {
         setOpen(false);
         setCurrentSubList([]);
+        setCurrentCategory(null);
     };
+
+    const handleMouse = (name, sub) => {
+        setCurrentCategory(name)
+        setCurrentSubList(sub);
+    }
 
     return (
         <Box
@@ -44,15 +54,18 @@ function Explore({ categories }) {
                         {categories.map((item) => (
                             <MenuItem
                                 key={item.name}
-                                onMouseEnter={() => setCurrentSubList(item.sub)}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    fontSize: "15px",
-                                    py: "10px",
-                                }}
+
+                                onMouseEnter={() => handleMouse(item.name, item.sub)
+                                }
                             >
-                                {item.name}
+                                <Link
+
+                                    to={`/${item.name.toLowerCase()}`}
+                                    style={{ textDecoration: "none", color: "inherit", width: "100%" }}
+                                >
+                                    {item.name}
+
+                                </Link>
                                 <span style={{ opacity: 0.7 }}>›</span>
                             </MenuItem>
                         ))}
@@ -69,7 +82,12 @@ function Explore({ categories }) {
                         >
                             {currentSubList.map((sub) => (
                                 <MenuItem key={sub} sx={{ fontSize: "14px" }}>
-                                    {sub}
+                                    <Link
+                                        to={`/${currentCategory}/${sub.toLowerCase().replace(/ /g, "-")}`}
+                                        style={{ textDecoration: "none", color: "inherit", width: "100%" }}>
+                                        {sub}
+                                    </Link>
+
                                 </MenuItem>
                             ))}
                         </Box>

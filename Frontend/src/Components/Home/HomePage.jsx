@@ -14,9 +14,10 @@ function HomePage() {
     const { isLogin, setIsLogin } = useContext(loginContext);
 
     const categories = [
-        { name: "Development", sub: ["Web Development", "Mobile Development", "Game Development"] },
-        { name: "Business", sub: ["Entrepreneurship", "Communication", "Management"] },
-        { name: "Finance & Accounting", sub: ["Accounting & Bookkeeping", "Finance", "Investing & Trading"] },
+        { name: "Development", sub: ["Web Development", "Mobile Development", "Game Development", "Software Testing"] },
+        { name: "Business", sub: ["Entrepreneurship", "Communication", "Management", "Business Strategy"] },
+        { name: "Design", sub: ["Web Design", "3D & Animation", "Game Design", "Design Tools"] },
+        { name: "Health", sub: ["Sports", "Yoga", "Mental Health", "Nutrition"] }
     ];
 
     const settings = {
@@ -39,9 +40,9 @@ function HomePage() {
 
     return (
         <div>
-            <Header categories={categories}/>
+            <Header categories={categories} />
 
-            {isLogin && <SubHeader categories={categories}/>}
+            {isLogin && <SubHeader categories={categories} />}
 
             {/* slider */}
             <div className="container-slider" style={{

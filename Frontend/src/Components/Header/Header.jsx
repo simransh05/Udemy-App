@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useContext } from 'react'
 import { loginContext } from '../../App'
 import { Link } from 'react-router-dom'
@@ -8,7 +8,7 @@ import { IoCartOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
 import Explore from '../Explore/Explore'
 function Header({ categories }) {
-    const { isLogin } = useContext(loginContext)
+    const { isLogin, setIsLogin } = useContext(loginContext)
     const getInitials = (name) => {
         if (!name) return "";
         const parts = name.trim().split(" ");
@@ -19,6 +19,13 @@ function Header({ categories }) {
     };
 
     const getuser = JSON.parse(localStorage.getItem('login-info'));
+
+    useEffect(() => {
+        const info = localStorage.getItem("login-info");
+        if (info) {
+            setIsLogin(true);
+        }
+    }, []);
 
     return (
         <div className='container' >
