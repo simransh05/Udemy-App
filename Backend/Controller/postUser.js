@@ -49,3 +49,39 @@ module.exports.postLogin = async (req, res) => {
     }
 
 }
+
+module.exports.getCards = async (req, res) => {
+    const filter = req.params.filter;
+
+    const data = await Course.find({
+        $or: [
+            { category: filter },
+            { subCategory: filter }
+        ]
+    });
+
+    res.json({ data });
+}
+
+module.exports.postCard = async (req, res) => {
+    const { title, category, subCategory, price, userId } = req.body;
+    try {
+        if (!req.file) {
+            return res.status(404).json({ message: 'file not found' })
+        }
+        const url = `/uploads/${req.file.filename}`;
+        const data = new Course({
+            title,
+            category,
+            subCategory,
+            price,
+            userId,
+            thumbnail: url
+        })
+        await data.save();
+        return res.status(200).json(data);
+    } catch (err) {
+        res.status(500).json({ message: 'Internal error' })
+    }
+
+}
