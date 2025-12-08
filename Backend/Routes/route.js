@@ -10,6 +10,8 @@ router.post('/login', controller.postLogin);
 
 router.get("/:filter", controller.getCards);
 
-router.post("/", upload.single(thumbnail), controller.postCard);
+router.get('/', controller.getAllCards);
+
+router.post("/", upload.single('thumbnail'), controller.postCard);
 
 module.exports = router;

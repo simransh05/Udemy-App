@@ -58,16 +58,16 @@ function Header({ categories }) {
 
 
             {isLogin && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button>
+                <Link to='/fav'>
                     <MdFavoriteBorder style={{ height: '40px', width: '40px' }} />
-                </Button>
+                </Link>
             </div>}
 
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button>
+                <Link to='/cart'>
                     <IoCartOutline style={{ height: '40px', width: '40px', }} />
-                </Button>
+                </Link>
             </div>
 
 

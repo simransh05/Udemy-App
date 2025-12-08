@@ -10,18 +10,21 @@ import {
   InputLabel,
   Select
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { categoryContext, loginContext } from "../../App";
+import { Link, useNavigate } from "react-router-dom";
+import { categoryContext } from "../../App";
+import api from "../../utils/api";
+import Header from "../Header/Header";
 
 function Teach() {
+  const navigate = useNavigate()
   const { categories } = useContext(categoryContext);
-  const { isLogin } = useContext(loginContext);
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: "",
     category: "",
     subCategory: "",
-    price: ""
+    price: "",
+    description: ""
   });
 
   const handleChange = (e) => {
@@ -34,7 +37,7 @@ function Teach() {
     }
 
     if (name === "category") {
-      setFormData((prev) => ({ ...prev, subCategory: "" }));
+      setFormData((prev) => ({ ...prev, subCategory: formData.subCategory || '' }));
     }
   };
 
@@ -43,25 +46,27 @@ function Teach() {
 
     try {
       const data = new FormData();
+
       data.append("thumbnail", formData.thumbnail);
-      if (isLogin) {
-        const user = JSON.parse(localStorage.getItem('login-info'))
-        data.append("userId", user?.id);
-      }
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("category", formData.category.toLowerCase());
+      data.append(
+        "subCategory",
+        formData.subCategory.toLowerCase().replace(/ /g, "-")
+      );
+      data.append("price", formData.price);
 
+      const user = JSON.parse(localStorage.getItem("login-info"));
+      data.append("userId", user?._id);
 
-      const entireData = {
-        title,
-        category: category.toLowerCase(),
-        subCategory: subCategorytoLowerCase().replace(/ /g, "-"),
-        price,
-        data
-      }
+      // console.log("final FormData:", [...data]);
 
-      const res = await api.postCard(entireData);
+      const res = await api.postCard(data);
 
-      console.log("Course Created:", res.data);
-      alert("Course Successfully Created!");
+      // console.log("Course Created:", res.data);
+      navigate('/')
+
     } catch (error) {
       console.error(error);
       alert("Error while creating course!");
@@ -70,6 +75,7 @@ function Teach() {
 
   return (
     <>
+      <Header categories={categories} />
       <Box
         sx={{
           maxWidth: 500,
@@ -86,6 +92,10 @@ function Teach() {
         </Typography>
 
         <form onSubmit={handleSubmit}>
+          {formData.thumbnail && (
+            <img src={URL.createObjectURL(formData.thumbnail)} alt="image" width={160} height={80} />
+          )}
+
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
             Upload Thumbnail Photo
             <input
@@ -96,11 +106,6 @@ function Teach() {
               onChange={handleChange}
             />
           </Button>
-          {formData.thumbnail && (
-            <Typography variant="body2" mb={1}>
-              Selected: {formData.thumbnail.name}
-            </Typography>
-          )}
 
           <TextField
             name="title"
@@ -110,6 +115,16 @@ function Teach() {
             required
             sx={{ mb: 2 }}
             value={formData.title}
+            onChange={handleChange}
+          />
+          <TextField
+            name="description"
+            label="Course Description"
+            variant="outlined"
+            fullWidth
+            required
+            sx={{ mb: 2 }}
+            value={formData.description}
             onChange={handleChange}
           />
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import './SubHeader.css'
+import { Link } from "react-router-dom";
 
-function SubHeader({categories}) {
+function SubHeader({ categories }) {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleEnter = (cat) => {
@@ -19,12 +20,11 @@ function SubHeader({categories}) {
         <Box
           sx={{
             display: "flex",
-            justifyContent:'center',
+            justifyContent: 'center',
             gap: 4,
             padding: "15px 20px",
             background: "#fff",
           }}
-          onMouseLeave={handleLeave}
         >
           {categories.map((cat, i) => (
             <Typography
@@ -32,7 +32,10 @@ function SubHeader({categories}) {
               onMouseEnter={() => handleEnter(cat)}
               sx={{ cursor: "pointer", "&:hover": { color: "blue" } }}
             >
-              {cat.name}
+              <Link to={`${cat.name.toLowerCase()}`}
+              style={{textDecoration:'none',color:'inherit' ,width:'100%'}}>
+                {cat.name}
+              </Link>
             </Typography>
           ))}
         </Box>
@@ -43,8 +46,8 @@ function SubHeader({categories}) {
             onMouseLeave={handleLeave}
             sx={{
               position: "absolute",
-              display:'flex',
-              justifyContent:'center',
+              display: 'flex',
+              justifyContent: 'center',
               top: "55px",
               left: "50%",
               transform: "translateX(-50%)",
@@ -59,7 +62,10 @@ function SubHeader({categories}) {
           >
             {selectedCategory.sub.map((item, i) => (
               <Typography key={i} sx={{ "&:hover": { color: "violet" }, cursor: "pointer" }}>
-                {item}
+                <Link to={`${selectedCategory.name.toLowerCase()}/${item.toLowerCase().replace(/ /g, "-")}`}
+                style={{textDecoration:'none',color:'inherit' ,width:'100%'}}>
+                  {item}
+                </Link>
               </Typography>
             ))}
           </Paper>
