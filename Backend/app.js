@@ -7,6 +7,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('/upload', express.static('upload'));
 
 app.use('/',require('./Routes/route'))
 

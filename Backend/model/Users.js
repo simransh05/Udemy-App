@@ -16,7 +16,16 @@ const UserSchema = new mongoose.Schema({
     profession: {
         type: String,
         require: true
-    }
+    },
+    role: {
+        type: String,
+        enum: ["learner", "creator", "admin"],
+        default: "learner"
+    },
+    fav: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+    }]
 })
 
 module.exports = mongoose.model('User', UserSchema);

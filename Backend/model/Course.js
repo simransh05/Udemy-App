@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const courseSchema = mongoose.Schema({
+const courseSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -18,14 +18,18 @@ const courseSchema = mongoose.Schema({
         type: String,
         require: true
     },
-    image: {
+    thumbnail: {
         type: String,
         require: true
     },
     price: {
         type: String,
         require: true
+    },
+    description: {
+        type: String,
+        require: true
     }
 })
 
-module.exports = mongoose.Model('Course', courseSchema)
+module.exports = mongoose.model('Course', courseSchema)

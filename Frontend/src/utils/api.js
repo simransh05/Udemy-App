@@ -11,7 +11,10 @@ const api = {
         return await axios.get(`${base_url}/${formatted}`)
     },
     postCard: async (entireData) => {
-        return await axios.post("http://localhost:4000", entireData);
+        return await axios.post(`${base_url}`, entireData);
+    },
+    getAllCards: async () => {
+        return await axios.get(`${base_url}`);
     }
 }
 

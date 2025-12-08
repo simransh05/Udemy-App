@@ -1,5 +1,6 @@
 const User = require('../model/Users')
 const bcrypt = require('bcrypt')
+const Course = require('../model/Course')
 
 module.exports.postSignup = async (req, res) => {
     try {
@@ -50,32 +51,45 @@ module.exports.postLogin = async (req, res) => {
 
 }
 
+module.exports.getAllCards = async (req, res) => {
+    try {
+        const data = await Course.find().populate('userId', 'name profession');
+        // console.log(data)
+        return res.json({ data })
+    } catch (err) {
+        return res.json({ message: err.message })
+    }
+}
+
 module.exports.getCards = async (req, res) => {
     const filter = req.params.filter;
-
-    const data = await Course.find({
-        $or: [
-            { category: filter },
-            { subCategory: filter }
-        ]
-    });
-
-    res.json({ data });
+    try {
+        const data = await Course.find({
+            $or: [
+                { category: filter },
+                { subCategory: filter }
+            ]
+        }).populate('userId', 'name profession')
+        return res.json({ data });
+    } catch (err) {
+        return res.status(500).json({ message: 'internal error' })
+    }
 }
 
 module.exports.postCard = async (req, res) => {
-    const { title, category, subCategory, price, userId } = req.body;
+    const { title, category, subCategory, price, userId, description } = req.body;
     try {
         if (!req.file) {
             return res.status(404).json({ message: 'file not found' })
         }
-        const url = `/uploads/${req.file.filename}`;
+        const url = `/upload/${req.file.filename}`;
         const data = new Course({
             title,
             category,
             subCategory,
             price,
             userId,
+            description,
             thumbnail: url
         })
         await data.save();

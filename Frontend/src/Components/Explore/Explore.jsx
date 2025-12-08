@@ -83,7 +83,7 @@ function Explore({ categories }) {
                             {currentSubList.map((sub) => (
                                 <MenuItem key={sub} sx={{ fontSize: "14px" }}>
                                     <Link
-                                        to={`/${currentCategory}/${sub.toLowerCase().replace(/ /g, "-")}`}
+                                        to={`/${currentCategory.toLowerCase()}/${sub.toLowerCase().replace(/ /g, "-")}`}
                                         style={{ textDecoration: "none", color: "inherit", width: "100%" }}>
                                         {sub}
                                     </Link>

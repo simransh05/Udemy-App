@@ -1,23 +1,24 @@
 import React from 'react'
+import Header from '../Header/Header'
+import { categoryContext } from '../../App'
+import { useContext } from 'react'
 
 function Cart() {
+    const { categories } = useContext(categoryContext);
+    // api for getting all the cart item all the courses (with the entire data like getcard) 
+
+    // display in the list type 
+    // 1
+    // 2
+
+    // have btn proceed and remove (delete)
+
+    // and also every page have the home btn navigate('/')
+
     return (
         <div>
+            <Header categories={categories} />
 
-            {/* cart having the cart of mine that i added all from db */}
-
-            {/* cart will have display   */}
-
-            {/* 
-it will have a proper info of each cart we can remove it too using id 
-every cart have a btn of proceed to checkout
-cart individual have 
-image that store
-price 
-name title by 
-rating
-
-*/}
         </div>
     )
 }
