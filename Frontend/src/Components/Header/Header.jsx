@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { loginContext } from '../../App'
 import { Link } from 'react-router-dom'
@@ -7,8 +7,11 @@ import './Header.css'
 import { IoCartOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
 import Explore from '../Explore/Explore'
+import api from '../../utils/api'
 function Header({ categories }) {
     const { isLogin, setIsLogin } = useContext(loginContext)
+    const [fullData, setFullData] = useState([])
+    const [search, setSearch] = useState('')
     const getInitials = (name) => {
         if (!name) return "";
         const parts = name.trim().split(" ");
@@ -27,6 +30,23 @@ function Header({ categories }) {
         }
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await api.getAllCards();
+            setFullData(res.data.data)
+        }
+        fetchData();
+    }, [])
+
+    const handleChange = (e) => {
+        setSearch(e.target.value)
+    }
+
+
+    const searchName = fullData.filter(card => card.title.toLowerCase().includes(search.toLowerCase()) ||
+        card.description.toLowerCase().includes(search.toLowerCase()))
+
+
     return (
         <div className='container' >
             <div className="image">
@@ -38,15 +58,45 @@ function Header({ categories }) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Explore categories={categories} />
             </div>
+            <div style={{ position: 'relative', width: '300px' }}>
+                <input
+                    label="Search"
+                    name="search"
+                    type="text"
+                    onChange={handleChange}
+                    value={search}
+                    style={{width: '300px' , height:'50px', fontSize:'12px' , margin:'8px'}}
+                />
 
-            {/* search */}
-            <TextField
-                label="Search"
-                name="search"
-                type="text"
-                onChange={(e) => e.target.value}
-                margin="normal"
-            />
+                {search.length > 0 && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '100%', 
+                            left: 0,
+                            width: '100%',
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            maxHeight: '200px',
+                            overflowY: 'auto',
+                            zIndex: 1000,
+                        }}
+                    >
+                        {searchName.map(item => (
+                            <div
+                            {...console.log(item)}
+                                key={item._id}
+                                style={{ padding: '8px', borderBottom: '1px solid #eee', cursor: 'pointer' }}
+                            >
+                                <Link to={`/${item.category}`} style={{textDecoration:'none', color:'inherit'}} onClick={()=>setSearch('')}>
+                                    <div>{item.title}</div>
+                                    <div style={{ fontSize: '12px', color: '#555' }}>{item.description}</div>
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }} className='link-info'>
                 <Link to='/teach'>Teach on Udemy</Link>

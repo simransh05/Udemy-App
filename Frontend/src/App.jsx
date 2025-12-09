@@ -11,6 +11,7 @@ import "slick-carousel/slick/slick-theme.css";
 import './App.css'
 import MyLearning from './Components/Learning/MyLearning'
 import BaseCategory from './Components/BaseCategory/BaseCategory'
+import Favorite from './Components/Favorite/Favorite'
 
 export const loginContext = createContext();
 export const categoryContext = createContext();
@@ -36,6 +37,7 @@ function App() {
               <Route path='/teach' element={<Teach />} />
               <Route path='/cart' element={<Cart />} />
               <Route path='/my-learning' element={<MyLearning />} />
+              <Route path='/fav' element={<Favorite />} />
             </Routes>
           </Router>
         </categoryContext.Provider>

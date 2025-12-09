@@ -55,7 +55,6 @@ function SubHeader({ categories }) {
               padding: "15px 20px",
               background: "#111",
               color: "#fff",
-              display: "flex",
               gap: 4,
               zIndex: 10
             }}

@@ -79,10 +79,11 @@ module.exports.getCards = async (req, res) => {
 module.exports.postCard = async (req, res) => {
     const { title, category, subCategory, price, userId, description } = req.body;
     try {
-        if (!req.file) {
+        if (!req.files || !req.files.thumbnail || !req.files.video) {
             return res.status(404).json({ message: 'file not found' })
         }
-        const url = `/upload/${req.file.filename}`;
+        const url = `/upload/${req.files.thumbnail[0].filename}`;
+        const videoUrl = `/upload/${req.files.video[0].filename}`;
         const data = new Course({
             title,
             category,
@@ -90,12 +91,119 @@ module.exports.postCard = async (req, res) => {
             price,
             userId,
             description,
-            thumbnail: url
+            thumbnail: url,
+            video :videoUrl
         })
         await data.save();
         return res.status(200).json(data);
     } catch (err) {
         res.status(500).json({ message: 'Internal error' })
     }
+}
 
+module.exports.postCart = async (req, res) => {
+    const { cardId, userId } = req.body;
+    try {
+        console.log(cardId, userId)
+        const user = await User.findById(userId);
+        console.log(user.fav.includes(cardId))
+        if (user.fav.includes(cardId)) {
+            await User.findByIdAndUpdate(
+                userId,
+                {
+                    $pull: { fav: cardId },
+                    $addToSet: { cart: cardId }
+                }
+            );
+        }
+        return res.json({ message: 'added to cart' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.postFav = async (req, res) => {
+    const { cardId, userId } = req.body;
+    try {
+        const user = await User.findById(userId);
+        await User.findByIdAndUpdate(
+            userId,
+            { $addToSet: { fav: cardId } },
+            { new: true }
+        );
+        return res.json({ message: 'Added to fav' })
+    }
+
+    catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.getCart = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId).populate({ path: 'cart', populate: { path: 'userId', select: 'name profession' } });
+        console.log('cart', user)
+        const format = user.cart.map(item => ({
+            title: item?.title,
+            name: item.userId?.name,
+            profession: item.userId?.profession,
+            description: item?.description,
+            price: item?.price,
+            thumbnail: item?.thumbnail,
+            id: item?._id
+        }))
+        console.log(format)
+        return res.json(format);
+    } catch (err) {
+        res.status(500).json({ message: 'internal error' })
+    }
+
+}
+
+module.exports.getFav = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId).populate({ path: 'fav', populate: { path: 'userId', select: 'name profession' } });
+        console.log('fav', user)
+        const format = user.fav.map(item => ({
+            title: item?.title,
+            name: item.userId?.name,
+            profession: item.userId?.profession,
+            description: item?.description,
+            price: item?.price,
+            thumbnail: item?.thumbnail,
+            id: item?._id
+        }))
+        console.log('fav', format)
+        return res.json(format);
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.deleteCartItem = async (req, res) => {
+    console.log(req.body)
+    const { cardId, userId } = req.body;
+    console.log(userId, cardId)
+    try {
+        await User.findByIdAndUpdate(userId,
+            { $pull: { cart: cardId } }
+        )
+        return res.status(200).json({ message: 'Deleted Successfully' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.deleteFavItem = async (req, res) => {
+    const { userId, cardId } = req.body;
+    try {
+        await User.findByIdAndUpdate(userId,
+            { $pull: { fav: cardId } }
+        )
+        return res.status(200).json({ message: 'Deleted Successfully' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
 }

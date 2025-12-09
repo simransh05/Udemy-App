@@ -10,7 +10,7 @@ function Cards({ title }) {
   const { isLogin } = useContext(loginContext);
 
   const [fullData, setFullData] = useState([]);
-  const [open, setopen] = useState(false)
+  const [hoveredCard, setHoveredCard] = useState(null);
   const [page, setPage] = useState(1);
 
   const limit = isLogin ? 5 : 4;
@@ -33,13 +33,30 @@ function Cards({ title }) {
   }, [title]);
 
   console.log(fullData)
-  const handleCart = () => {
-    // post api which will send to the course id and the user id from the frontend and then will getuser from the id and update the cart array with the course id
+  const handleCart = async (cardId) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('login-info'))
+      const userId = user._id;
+      const data = { cardId, userId }
+      console.log(data)
+      const res = await api.postCart(data);
+      console.log(res.status)
+    } catch (err) {
+      console.log(err.message);
+    }
   }
 
-  const handleFav = () =>{
-    // api post will add the course to fav same
-    // if added to fav we have in fav add to cart open if added to cart remove from the fav and add to cart 
+  const handleFav = async (cardId) => {
+    try {
+      const user = JSON.parse(localStorage.getItem('login-info'))
+      const userId = user._id;
+      const data = { cardId, userId }
+      console.log(data)
+      await api.postFav(data)
+    }
+    catch (err) {
+      console.log(err.message);
+    }
   }
 
   const start = (page - 1) * limit;
@@ -47,12 +64,12 @@ function Cards({ title }) {
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "20px" }}>
-        {paginatedData.map((card) => (
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${limit}, 1fr)`, gridAutoRows: "auto", gap: "20px" ,margin:'5px'}}>
+        {fullData.length > 0 && paginatedData.map((card) => (
           <div key={card._id}
             className="card-box"
-            onMouseEnter={() => setopen(true)}
-            onMouseLeave={() => setopen(false)}
+            onMouseEnter={() => setHoveredCard(card._id)}
+            onMouseLeave={() => setHoveredCard(null)}
             style={{ position: 'relative' }}>
             <img src={`${base_url}${card.thumbnail}`} alt="thumbnail" width="100%" />
             <h4>{card.title}</h4>
@@ -62,10 +79,10 @@ function Cards({ title }) {
               <span>{card.userId.profession}</span>
             </div>
             <h3>${card.price}</h3>
-            {open &&
+            {hoveredCard === card._id &&
               <Paper
                 elevation={4}
-                onMouseLeave={() => setopen(false)}
+                onMouseLeave={() => setHoveredCard(null)}
                 sx={{
                   position: "absolute",
                   top: '50%',
@@ -78,13 +95,13 @@ function Cards({ title }) {
                   zIndex: 999,
                   overflow: "hidden",
                 }}>
-                <button style={{ border: 'none', width: '60px', height: '50px' }}
-                  onClick={handleCart}
+                <button style={{ border: 'none', width: '60px', height: '50px', cursor: 'pointer' }}
+                  onClick={() => handleCart(card._id)}
                 >
                   <IoCartOutline style={{ height: '20px', width: '30px' }} />
                 </button>
-                {isLogin && <button style={{ border: 'none', width: '60px', height: '50px', borderTop:"1px solid black" }}
-                  onClick={handleFav}
+                {isLogin && <button style={{ border: 'none', width: '60px', height: '50px', borderTop: "1px solid black", cursor: 'pointer' }}
+                  onClick={() => handleFav(card._id)}
                 >
                   <MdFavoriteBorder style={{ height: '20px', width: '30px' }} />
                 </button>}
