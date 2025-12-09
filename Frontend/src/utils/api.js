@@ -15,7 +15,25 @@ const api = {
     },
     getAllCards: async () => {
         return await axios.get(`${base_url}`);
-    }
+    },
+    postCart: async (data) => {
+        return await axios.post(`${base_url}/cart`, data)
+    },
+    postFav: async (data) => {
+        return await axios.post(`${base_url}/fav`, data)
+    },
+    getCart: async (userId) => {
+        return await axios.get(`${base_url}/cart/${userId}`)
+    },
+    getFav: async (userId) => {
+        return await axios.get(`${base_url}/fav/${userId}`)
+    },
+    deleteCartItem: async (data) => {
+        return await axios.delete(`${base_url}/cart`, {data})
+    },
+    deleteFavItem: async (data) => {
+        return await axios.delete(`${base_url}/fav`, {data})
+    },
 }
 
 export default api;

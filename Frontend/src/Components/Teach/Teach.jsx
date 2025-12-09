@@ -24,7 +24,8 @@ function Teach() {
     category: "",
     subCategory: "",
     price: "",
-    description: ""
+    description: "",
+    video: null
   });
 
   const handleChange = (e) => {
@@ -32,6 +33,8 @@ function Teach() {
 
     if (name === "thumbnail") {
       setFormData((prev) => ({ ...prev, thumbnail: files[0] }));
+    } else if (name === 'video') {
+      setFormData((prev) => ({ ...prev, video: files[0] }))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -48,6 +51,7 @@ function Teach() {
       const data = new FormData();
 
       data.append("thumbnail", formData.thumbnail);
+      data.append("video", formData.video);
       data.append("title", formData.title);
       data.append("description", formData.description);
       data.append("category", formData.category.toLowerCase());
@@ -103,6 +107,17 @@ function Teach() {
               hidden
               accept="image/*"
               name="thumbnail"
+              onChange={handleChange}
+            />
+          </Button>
+
+          <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
+            Upload Demo Video
+            <input
+              type="file"
+              hidden
+              accept="video/*"
+              name="video"
               onChange={handleChange}
             />
           </Button>

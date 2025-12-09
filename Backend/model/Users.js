@@ -25,6 +25,10 @@ const UserSchema = new mongoose.Schema({
     fav: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course',
+    }],
+    cart: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
     }]
 })
 
