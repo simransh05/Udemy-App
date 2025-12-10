@@ -92,7 +92,7 @@ module.exports.postCard = async (req, res) => {
             userId,
             description,
             thumbnail: url,
-            video :videoUrl
+            video: videoUrl
         })
         await data.save();
         return res.status(200).json(data);
@@ -104,9 +104,9 @@ module.exports.postCard = async (req, res) => {
 module.exports.postCart = async (req, res) => {
     const { cardId, userId } = req.body;
     try {
-        console.log(cardId, userId)
+        // console.log(cardId, userId)
         const user = await User.findById(userId);
-        console.log(user.fav.includes(cardId))
+        // console.log(user.fav.includes(cardId))
         if (user.fav.includes(cardId)) {
             await User.findByIdAndUpdate(
                 userId,
@@ -115,8 +115,16 @@ module.exports.postCart = async (req, res) => {
                     $addToSet: { cart: cardId }
                 }
             );
+        } else {
+            await User.findByIdAndUpdate(
+                userId,
+                {
+                    $addToSet: { cart: cardId }
+                }
+            );
         }
-        return res.json({ message: 'added to cart' })
+
+        return res.json({ message: 'added to cart', data: user.cart })
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
@@ -143,7 +151,7 @@ module.exports.getCart = async (req, res) => {
     const { userId } = req.params;
     try {
         const user = await User.findById(userId).populate({ path: 'cart', populate: { path: 'userId', select: 'name profession' } });
-        console.log('cart', user)
+        // console.log('cart', user)
         const format = user.cart.map(item => ({
             title: item?.title,
             name: item.userId?.name,
@@ -153,7 +161,7 @@ module.exports.getCart = async (req, res) => {
             thumbnail: item?.thumbnail,
             id: item?._id
         }))
-        console.log(format)
+        // console.log(format)
         return res.json(format);
     } catch (err) {
         res.status(500).json({ message: 'internal error' })
@@ -165,7 +173,7 @@ module.exports.getFav = async (req, res) => {
     const { userId } = req.params;
     try {
         const user = await User.findById(userId).populate({ path: 'fav', populate: { path: 'userId', select: 'name profession' } });
-        console.log('fav', user)
+        // console.log('fav', user)
         const format = user.fav.map(item => ({
             title: item?.title,
             name: item.userId?.name,
@@ -175,7 +183,7 @@ module.exports.getFav = async (req, res) => {
             thumbnail: item?.thumbnail,
             id: item?._id
         }))
-        console.log('fav', format)
+        // console.log('fav', format)
         return res.json(format);
     } catch (err) {
         return res.status(500).json({ message: err.message })
@@ -183,9 +191,8 @@ module.exports.getFav = async (req, res) => {
 }
 
 module.exports.deleteCartItem = async (req, res) => {
-    console.log(req.body)
     const { cardId, userId } = req.body;
-    console.log(userId, cardId)
+    // console.log(userId, cardId)
     try {
         await User.findByIdAndUpdate(userId,
             { $pull: { cart: cardId } }
@@ -203,6 +210,61 @@ module.exports.deleteFavItem = async (req, res) => {
             { $pull: { fav: cardId } }
         )
         return res.status(200).json({ message: 'Deleted Successfully' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.postLearn = async (req, res) => {
+    const { userId, cardId } = req.body;
+    try {
+        const user = await User.findById(userId);
+        await User.findByIdAndUpdate(
+            userId,
+            {
+                $addToSet: { learn: cardId },
+                $pull: {
+                    cart: cardId,
+                    fav: cardId
+                }
+            },
+            { new: true }
+        );
+        return res.json({ message: 'Added to Learn' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.getLearn = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await User.findById(userId).populate({ path: 'learn', populate: { path: 'userId', select: 'name profession' } });
+        console.log('user', user)
+        const format = user.learn.map(item => ({
+            name: item.userId?.name,
+            profession: item.userId?.profession,
+            id: item?.id,
+            video: item?.video,
+            title: item?.title,
+            description: item?.description,
+            thumbnail: item?.thumbnail
+        }))
+        console.log(format);
+        return res.json(format);
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.deleteLearnItem = async (req, res) => {
+    const { userId, cardId } = req.body;
+    try {
+        await User.findByIdAndUpdate(
+            userId,
+            { $pull: { learn: cardId } }
+        )
+        return res.status(200).json({ message: 'Successfully Deleted' })
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }

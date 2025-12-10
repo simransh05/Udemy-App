@@ -33,4 +33,9 @@ router.delete('/cart', controller.deleteCartItem);
 
 router.delete('/fav', controller.deleteFavItem);
 
+router.post('/learn', controller.postLearn);
+
+router.get('/learn/:userId', controller.getLearn);
+
+router.delete('/learn', controller.deleteLearnItem)
 module.exports = router;

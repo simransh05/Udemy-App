@@ -38,9 +38,8 @@ function Cards({ title }) {
       const user = JSON.parse(localStorage.getItem('login-info'))
       const userId = user._id;
       const data = { cardId, userId }
-      console.log(data)
       const res = await api.postCart(data);
-      console.log(res.status)
+      console.log(res.data)
     } catch (err) {
       console.log(err.message);
     }

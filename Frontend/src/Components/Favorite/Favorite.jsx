@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 const base_url = import.meta.env.VITE_BASE_URL;
+import {toast} from 'react-toastify'
 
 function Favorite() {
     const { categories } = useContext(categoryContext);
@@ -37,7 +38,7 @@ function Favorite() {
 
     }
 
-    const handleDelete = async (cardId)=>{
+    const handleDelete = async (cardId) => {
         try {
             const user = JSON.parse(localStorage.getItem('login-info'))
             const userId = user._id;
@@ -51,7 +52,22 @@ function Favorite() {
             console.log(err.message)
         }
     }
-
+    const handleProceed = async (cardId) => {
+        try {
+            const user = JSON.parse(localStorage.getItem('login-info'))
+            const userId = user._id;
+            const data = { userId, cardId }
+            const res = await api.postLearn(data);
+            console.log(res.data,res.status)
+            if (res.status == 200) {
+                toast.success('Added to Your Learning')
+            }
+            const res1 = await api.getFav(userId);
+            setFullData(res1.data)
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
 
     return (
         <div>
@@ -68,15 +84,15 @@ function Favorite() {
                             <p>{item.description}</p>
                             <div>$ {item.price}</div>
                             <div className="btnGroup">
-                                <button className='remove-btn' onClick={()=>handleDelete(item.id)}>❌</button>
+                                <button className='remove-btn' onClick={() => handleDelete(item.id)}>❌</button>
                                 <button onClick={() => handleCart(item.id)}>Add to Cart</button>
-                                <button>Proceed Course</button>
+                                <button onClick={()=>handleProceed(item.id)}>Proceed Course</button>
                             </div>
                         </div>
 
                     ))}
                 </> : <>
-                    <Link to='/'>Add to Fav</Link>
+                    <Link to='/'>Explore Some Courses</Link>
                 </>}
             </div>
         </div>

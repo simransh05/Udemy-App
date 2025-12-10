@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { categoryContext } from "../../App";
 import api from "../../utils/api";
 import Header from "../Header/Header";
+import { toast } from 'react-toastify'
 
 function Teach() {
   const navigate = useNavigate()
@@ -27,6 +28,19 @@ function Teach() {
     description: "",
     video: null
   });
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('login-info'));
+    if (!user) {
+      toast.error("Login First!")
+      navigate('/login');
+      return;
+    } if (user.role === 'learner') {
+      toast.error("Access Denied! Only instructors can create courses.");
+      navigate('/');
+      return;
+    }
+  }, [])
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -80,6 +94,7 @@ function Teach() {
   return (
     <>
       <Header categories={categories} />
+      {/* handle isLofin if not  */}
       <Box
         sx={{
           maxWidth: 500,
@@ -97,7 +112,7 @@ function Teach() {
 
         <form onSubmit={handleSubmit}>
           {formData.thumbnail && (
-            <img src={URL.createObjectURL(formData.thumbnail)} alt="image" width={160} height={80} />
+            <img src={URL.createObjectURL(formData.thumbnail)} alt="image" width='100%' height={180} />
           )}
 
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
@@ -111,6 +126,9 @@ function Teach() {
             />
           </Button>
 
+          {formData.video && (
+            <video src={URL.createObjectURL(formData.video)} width='100%' height={180} controls/>
+          )}
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
             Upload Demo Video
             <input
