@@ -12,6 +12,7 @@ import './App.css'
 import MyLearning from './Components/Learning/MyLearning'
 import BaseCategory from './Components/BaseCategory/BaseCategory'
 import Favorite from './Components/Favorite/Favorite'
+import { ToastContainer } from 'react-toastify'
 
 export const loginContext = createContext();
 export const categoryContext = createContext();
@@ -42,6 +43,7 @@ function App() {
           </Router>
         </categoryContext.Provider>
       </loginContext.Provider>
+      <ToastContainer position='top-center' autoClose={2000} />
     </>
   )
 }

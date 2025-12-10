@@ -29,10 +29,19 @@ const api = {
         return await axios.get(`${base_url}/fav/${userId}`)
     },
     deleteCartItem: async (data) => {
-        return await axios.delete(`${base_url}/cart`, {data})
+        return await axios.delete(`${base_url}/cart`, { data })
     },
     deleteFavItem: async (data) => {
-        return await axios.delete(`${base_url}/fav`, {data})
+        return await axios.delete(`${base_url}/fav`, { data })
+    },
+    postLearn: async (data) => {
+        return await axios.post(`${base_url}/learn`, data)
+    },
+    getLearn: async (userId) => {
+        return await axios.get(`${base_url}/learn/${userId}`)
+    },
+    deleteLearnItem: async (data) => {
+        return await axios.delete(`${base_url}/learn`, { data })
     },
 }
 

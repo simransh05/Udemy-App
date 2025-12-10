@@ -10,6 +10,7 @@ import Slide1 from '../Slides/Slide1';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slide2 from '../Slides/Slide2';
+import './HomePage.css'
 function HomePage() {
     const { isLogin, setIsLogin } = useContext(loginContext);
 
@@ -44,14 +45,8 @@ function HomePage() {
 
             {isLogin && <SubHeader categories={categories} />}
 
-            {/* slider */}
-            <div className="container-slider" style={{
-                width: '100%',
-                overflow: 'hidden',
-                padding: '20px 0',
-            }}>
+            <div className="container-slider">
                 <Slider {...settings}>
-                    {/* all the slides */}
                     <Slide1 />
                     <Slide2 />
                     <Slide1 />
@@ -59,8 +54,6 @@ function HomePage() {
                     <Slide1 />
                 </Slider>
             </div>
-
-            {/* if login then the content also trending how it check by rating */}
             {isLogin && <Cards />}
         </div >
     )

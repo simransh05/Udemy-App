@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
-import './SubHeader.css'
+import "./SubHeader.css";
 import { Link } from "react-router-dom";
 
 function SubHeader({ categories }) {
@@ -16,24 +16,19 @@ function SubHeader({ categories }) {
 
   return (
     <div className="sub-header-container">
-      <Box sx={{ position: "relative", display: 'flex', flexDirection: 'column' }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: 'center',
-            gap: 4,
-            padding: "15px 20px",
-            background: "#fff",
-          }}
-        >
+      <Box className="subheader-wrapper"
+        onMouseLeave={handleLeave}>
+        <Box className="main-category-row">
           {categories.map((cat, i) => (
             <Typography
               key={i}
+              className="category-item"
               onMouseEnter={() => handleEnter(cat)}
-              sx={{ cursor: "pointer", "&:hover": { color: "blue" } }}
             >
-              <Link to={`${cat.name.toLowerCase()}`}
-              style={{textDecoration:'none',color:'inherit' ,width:'100%'}}>
+              <Link
+                to={`${cat.name.toLowerCase()}`}
+                className="category-link"
+              >
                 {cat.name}
               </Link>
             </Typography>
@@ -43,26 +38,17 @@ function SubHeader({ categories }) {
         {selectedCategory && (
           <Paper
             elevation={5}
+            className="subcategory-box"
             onMouseLeave={handleLeave}
-            sx={{
-              position: "absolute",
-              display: 'flex',
-              justifyContent: 'center',
-              top: "55px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "100%",
-              padding: "15px 20px",
-              background: "#111",
-              color: "#fff",
-              gap: 4,
-              zIndex: 10
-            }}
           >
             {selectedCategory.sub.map((item, i) => (
-              <Typography key={i} sx={{ "&:hover": { color: "violet" }, cursor: "pointer" }}>
-                <Link to={`${selectedCategory.name.toLowerCase()}/${item.toLowerCase().replace(/ /g, "-")}`}
-                style={{textDecoration:'none',color:'inherit' ,width:'100%'}}>
+              <Typography key={i} className="subcategory-item">
+                <Link
+                  to={`${selectedCategory.name.toLowerCase()}/${item
+                    .toLowerCase()
+                    .replace(/ /g, "-")}`}
+                  className="subcategory-link"
+                >
                   {item}
                 </Link>
               </Typography>
@@ -71,7 +57,6 @@ function SubHeader({ categories }) {
         )}
       </Box>
     </div>
-
   );
 }
 

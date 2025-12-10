@@ -4,6 +4,7 @@ import { categoryContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 const base_url = import.meta.env.VITE_BASE_URL;
 function Cart() {
     const { categories } = useContext(categoryContext);
@@ -22,10 +23,21 @@ function Cart() {
         }
     }
 
-    const handleProceed = async (id) => {
-        const user = JSON.parse(localStorage.getItem('login-info'))
-        const userId = user._id;
-
+    const handleProceed = async (cardId) => {
+        try {
+            const user = JSON.parse(localStorage.getItem('login-info'))
+            const userId = user._id;
+            const data = { userId, cardId }
+            const res = await api.postLearn(data);
+            console.log(res.data,res.status)
+            if (res.status == 200) {
+                toast.success('Added to Your Learning')
+            }
+            const res1 = await api.getCart(userId);
+            setFullData(res1.data)
+        } catch (err) {
+            console.log(err.message);
+        }
     }
 
     useEffect(() => {
@@ -58,13 +70,13 @@ function Cart() {
                             <div>$ {item.price}</div>
                             <div className="btnGroup">
                                 <button className='remove-btn' onClick={() => handleDelete(item.id)}>❌</button>
-                                <button onClick={handleProceed}>Proceed Course</button>
+                                <button onClick={()=>handleProceed(item.id)}>Proceed Course</button>
                             </div>
                         </div>
 
                     ))}
                 </> : <>
-                    <Link to='/'>Add to Cart</Link>
+                    <Link to='/'>Explore Some Course</Link>
                 </>}
             </div>
         </div>
