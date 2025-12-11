@@ -5,6 +5,9 @@ const base_url = import.meta.env.VITE_BASE_URL;
 import { IoCartOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
 import { Box, Paper } from "@mui/material";
+import { toast } from 'react-toastify'
+import { useNavigate } from "react-router-dom";
+import './Cards.css'
 
 function Cards({ title }) {
   const { isLogin } = useContext(loginContext);
@@ -40,6 +43,7 @@ function Cards({ title }) {
       const data = { cardId, userId }
       const res = await api.postCart(data);
       console.log(res.data)
+      toast.success('Successfully Added')
     } catch (err) {
       console.log(err.message);
     }
@@ -52,10 +56,27 @@ function Cards({ title }) {
       const data = { cardId, userId }
       console.log(data)
       await api.postFav(data)
+      toast.success('Successfully Added')
     }
     catch (err) {
       console.log(err.message);
     }
+  }
+  const user = JSON.parse(localStorage.getItem('login-info'));
+
+  const handleCardDelete = async (cardId) => {
+    await api.deleteCardItem(cardId);
+    toast.error('Course deleted')
+    let res;
+    if (!title) {
+      res = await api.getAllCards();
+    } else {
+      const formatted = title.toLowerCase().replace(/ /g, "-");
+      res = await api.getCards(formatted);
+    }
+
+    setFullData(res.data.data);
+    setPage(1);
   }
 
   const start = (page - 1) * limit;
@@ -63,38 +84,26 @@ function Cards({ title }) {
 
   return (
     <div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${limit}, 1fr)`, gridAutoRows: "auto", gap: "20px" ,margin:'5px'}}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(${limit}, 1fr)`, gridAutoRows: "auto", gap: "20px", margin: '5px' }}>
         {fullData.length > 0 && paginatedData.map((card) => (
           <div key={card._id}
             className="card-box"
             onMouseEnter={() => setHoveredCard(card._id)}
-            onMouseLeave={() => setHoveredCard(null)}
-            style={{ position: 'relative' }}>
+            onMouseLeave={() => setHoveredCard(null)}>
             <img src={`${base_url}${card.thumbnail}`} alt="thumbnail" width="100%" />
             <h4>{card.title}</h4>
-            <p>{card.description}</p>
-            <div >
-              <span style={{ gap: '4x' }}>{card.userId.name}</span>,
-              <span>{card.userId.profession}</span>
+            <em>{card.description}</em>
+            <div className="data">
+              <span style={{gap:'4px'}}>{card.userId.name}</span>, <span>{card.userId.profession}</span>
             </div>
             <h3>${card.price}</h3>
             {hoveredCard === card._id &&
               <Paper
                 elevation={4}
                 onMouseLeave={() => setHoveredCard(null)}
-                sx={{
-                  position: "absolute",
-                  top: '50%',
-                  left: '95%',
-                  display: "flex",
-                  flexDirection: 'column',
-                  bgcolor: "white",
-                  borderRadius: "10px",
-                  boxShadow: 4,
-                  zIndex: 999,
-                  overflow: "hidden",
-                }}>
-                <button style={{ border: 'none', width: '60px', height: '50px', cursor: 'pointer' }}
+                className="paper-wrapper"
+              >
+                <button className="cart-btn"
                   onClick={() => handleCart(card._id)}
                 >
                   <IoCartOutline style={{ height: '20px', width: '30px' }} />
@@ -105,6 +114,11 @@ function Cards({ title }) {
                   <MdFavoriteBorder style={{ height: '20px', width: '30px' }} />
                 </button>}
               </Paper>
+            }
+            {isLogin && user.role != 'learner' &&
+              <div className="delete-btn">
+                <button onClick={() => handleCardDelete(card._id)} >Delete Course</button>
+              </div>
             }
           </div>
 

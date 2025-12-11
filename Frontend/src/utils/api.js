@@ -43,6 +43,9 @@ const api = {
     deleteLearnItem: async (data) => {
         return await axios.delete(`${base_url}/learn`, { data })
     },
+    deleteCardItem : async (cardId) => {
+        return await axios.delete(`${base_url}/${cardId}`)
+    },
 }
 
 export default api;

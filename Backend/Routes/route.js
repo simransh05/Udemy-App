@@ -37,5 +37,8 @@ router.post('/learn', controller.postLearn);
 
 router.get('/learn/:userId', controller.getLearn);
 
-router.delete('/learn', controller.deleteLearnItem)
+router.delete('/learn', controller.deleteLearnItem);
+
+router.delete('/:cardId', controller.deleteCardItem);
+
 module.exports = router;
