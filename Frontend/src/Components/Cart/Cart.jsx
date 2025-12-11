@@ -5,6 +5,7 @@ import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import './Cart.css'
 const base_url = import.meta.env.VITE_BASE_URL;
 function Cart() {
     const { categories } = useContext(categoryContext);
@@ -18,6 +19,7 @@ function Cart() {
             await api.deleteCartItem(data);
             const res = await api.getCart(userId)
             setFullData(res.data)
+            toast.success('Removed from the Cart')
         } catch (err) {
             console.log(err.message)
         }
@@ -29,7 +31,7 @@ function Cart() {
             const userId = user._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
-            console.log(res.data,res.status)
+            console.log(res.data, res.status)
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
             }
@@ -52,7 +54,7 @@ function Cart() {
         getCart()
     }, [])
 
-    console.log(fullData)
+    // console.log(fullData)
 
     return (
         <div>
@@ -60,23 +62,23 @@ function Cart() {
             <div className='cart-container'>
                 {fullData.length > 0 ? <>
                     {fullData.map((item) => (
-                        <div key={item.id}>
-                            <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" width={250} height={200} />
-                            <div>
-                                <span>{item.name}</span> , <span>{item.profession}</span>
+                        <div key={item.id} className='individual-cart'>
+                            <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                            <h4>{item.title}</h4>
+                            <em>{item.description}</em>
+                            <div className="data">
+                                <span style={{ gap: '4px' }}>{item.name}</span>, <span>{item.profession}</span>
                             </div>
-                            <strong>{item.title}</strong>
-                            <p>{item.description}</p>
-                            <div>$ {item.price}</div>
+                            <h3>${item.price}</h3>
                             <div className="btnGroup">
-                                <button className='remove-btn' onClick={() => handleDelete(item.id)}>❌</button>
-                                <button onClick={()=>handleProceed(item.id)}>Proceed Course</button>
+                                <button className='remove-btn1' onClick={() => handleDelete(item.id)}>❌</button>
+                                <button onClick={() => handleProceed(item.id)} className='add'>Proceed Course</button>
                             </div>
                         </div>
 
                     ))}
                 </> : <>
-                    <Link to='/'>Explore Some Course</Link>
+                    <Link to='/' className='home'>Explore Some Course</Link>
                 </>}
             </div>
         </div>

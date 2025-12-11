@@ -240,7 +240,7 @@ module.exports.getLearn = async (req, res) => {
     const { userId } = req.params;
     try {
         const user = await User.findById(userId).populate({ path: 'learn', populate: { path: 'userId', select: 'name profession' } });
-        console.log('user', user)
+        // console.log('user', user)
         const format = user.learn.map(item => ({
             name: item.userId?.name,
             profession: item.userId?.profession,
@@ -250,7 +250,7 @@ module.exports.getLearn = async (req, res) => {
             description: item?.description,
             thumbnail: item?.thumbnail
         }))
-        console.log(format);
+        // console.log(format);
         return res.json(format);
     } catch (err) {
         return res.status(500).json({ message: err.message })
@@ -264,6 +264,26 @@ module.exports.deleteLearnItem = async (req, res) => {
             userId,
             { $pull: { learn: cardId } }
         )
+        return res.status(200).json({ message: 'Successfully Deleted' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.deleteCardItem = async (req, res) => {
+    const { cardId } = req.params;
+    try {
+        await User.updateMany(
+            {},
+            {
+                $pull: {
+                    fav: cardId,
+                    cart: cardId,
+                    learn: cardId
+                }
+            }
+        )
+        await Course.findByIdAndDelete(cardId);
         return res.status(200).json({ message: 'Successfully Deleted' })
     } catch (err) {
         return res.status(500).json({ message: err.message })

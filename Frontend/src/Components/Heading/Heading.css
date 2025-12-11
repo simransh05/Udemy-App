@@ -3,16 +3,16 @@
 }
 
 .title {
-    font-size: "28px";
-    font-weight: "600";
-    margin-right: '20px';
+    font-size: 28px;
+    font-weight: 600;
+    margin-right: 20px;
 }
 
 .sub-heading {
-    margin-top: "10px";
-    display: "flex";
-    gap: "12px";
-    flex-wrap: "wrap";
+    margin-top: 10px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .sub-menu {

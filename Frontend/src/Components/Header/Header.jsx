@@ -45,8 +45,11 @@ function Header({ categories }) {
     );
 
     const logout = () => {
-        setIsLogin(false);
-        localStorage.clear();
+        const confirm = window.confirm('Are you sure yu want to Logout');
+        if (confirm) {
+            setIsLogin(false);
+            localStorage.clear();
+        }
     };
 
     return (
@@ -55,7 +58,7 @@ function Header({ categories }) {
             <div className="header-image">
                 <Link to='/'>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyZvP14HBpcaL_rzKBwwhDakccjqhKxzJLag&s"
-                        alt="Udemy" width='75' height='80' />
+                        alt="Udemy" width='75' height='70'  />
                 </Link>
             </div>
 
@@ -86,13 +89,13 @@ function Header({ categories }) {
                 )}
             </div>
 
-            <div className='center-flex link-info'>
-                <Link to='/teach'>Teach on Udemy</Link>
+            <div className='center-flex'>
+                <Link to='/teach' className='link-info'>Teach on Udemy</Link>
             </div>
 
             {isLogin && (
-                <div className='center-flex link-info'>
-                    <Link to='/my-learning'>My Learning</Link>
+                <div className='center-flex'>
+                    <Link to='/my-learning' className='link-info'>My Learning</Link>
                 </div>
             )}
 
@@ -103,7 +106,7 @@ function Header({ categories }) {
                     </Link>
                 </div>
             )}
-            
+
             <div className='center-flex'>
                 <Link to='/cart'>
                     <IoCartOutline className="icon-size" />
@@ -113,8 +116,8 @@ function Header({ categories }) {
             {isLogin ? (
                 <>
                     <div className="initials">{getInitials(getuser.name)}</div>
-                    <button className="logout-btn" onClick={logout}>
-                        <FiLogOut style={{width:'50px' , height:'40px'}} />
+                    <button className="logout-btn icon-size" onClick={logout}>
+                        <FiLogOut style={{ width: '50px', height: '40px' }} />
                     </button>
                 </>
             ) : (

@@ -5,7 +5,8 @@ import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 const base_url = import.meta.env.VITE_BASE_URL;
-import {toast} from 'react-toastify'
+import { toast } from 'react-toastify'
+import './Favorite.css'
 
 function Favorite() {
     const { categories } = useContext(categoryContext);
@@ -32,6 +33,7 @@ function Favorite() {
             const res = await api.getFav(userId)
             console.log(res.data);
             setFullData(res.data)
+            toast.success('Added in Cart')
         } catch (err) {
             console.log(err.message);
         }
@@ -48,6 +50,7 @@ function Favorite() {
             const res = await api.getFav(userId)
             console.log(res.data);
             setFullData(res.data)
+            toast.success(`Removed from your Favorite`);
         } catch (err) {
             console.log(err.message)
         }
@@ -58,7 +61,7 @@ function Favorite() {
             const userId = user._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
-            console.log(res.data,res.status)
+            console.log(res.data, res.status)
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
             }
@@ -75,24 +78,24 @@ function Favorite() {
             <div className='fav-container'>
                 {fullData.length > 0 ? <>
                     {fullData.map((item) => (
-                        <div key={item.id}>
-                            <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" width={250} height={200} />
-                            <div>
-                                <span>{item.name}</span> , <span>{item.profession}</span>
+                        <div key={item.id} className='individual-cart'>
+                            <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                            <h4>{item.title}</h4>
+                            <em>{item.description}</em>
+                            <div className="data">
+                                <span style={{ gap: '4px' }}>{item.name}</span>, <span>{item.profession}</span>
                             </div>
-                            <strong>{item.title}</strong>
-                            <p>{item.description}</p>
-                            <div>$ {item.price}</div>
+                            <h3>${item.price}</h3>
                             <div className="btnGroup">
                                 <button className='remove-btn' onClick={() => handleDelete(item.id)}>❌</button>
-                                <button onClick={() => handleCart(item.id)}>Add to Cart</button>
-                                <button onClick={()=>handleProceed(item.id)}>Proceed Course</button>
+                                <button onClick={() => handleCart(item.id)} className='add'>Add to Cart</button>
+                                <button onClick={() => handleProceed(item.id)} className='add'>Proceed Course</button>
                             </div>
                         </div>
 
                     ))}
                 </> : <>
-                    <Link to='/'>Explore Some Courses</Link>
+                    <Link to='/' className='home'>Explore Some Courses</Link>
                 </>}
             </div>
         </div>

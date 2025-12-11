@@ -15,18 +15,19 @@ import { categoryContext } from "../../App";
 import api from "../../utils/api";
 import Header from "../Header/Header";
 import { toast } from 'react-toastify'
+import './Teach.css'
 
 function Teach() {
   const navigate = useNavigate()
   const { categories } = useContext(categoryContext);
+  const [video, setVideo] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
   const [formData, setFormData] = useState({
-    thumbnail: null,
     title: "",
     category: "",
     subCategory: "",
     price: "",
     description: "",
-    video: null
   });
 
   useEffect(() => {
@@ -46,15 +47,15 @@ function Teach() {
     const { name, value, files } = e.target;
 
     if (name === "thumbnail") {
-      setFormData((prev) => ({ ...prev, thumbnail: files[0] }));
+      setThumbnail(files[0]);
     } else if (name === 'video') {
-      setFormData((prev) => ({ ...prev, video: files[0] }))
+      setVideo(URL.createObjectURL(files[0]));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
 
     if (name === "category") {
-      setFormData((prev) => ({ ...prev, subCategory: formData.subCategory || '' }));
+      setFormData((prev) => ({ ...prev, subCategory: '' }));
     }
   };
 
@@ -64,8 +65,8 @@ function Teach() {
     try {
       const data = new FormData();
 
-      data.append("thumbnail", formData.thumbnail);
-      data.append("video", formData.video);
+      data.append("thumbnail", thumbnail);
+      data.append("video", video);
       data.append("title", formData.title);
       data.append("description", formData.description);
       data.append("category", formData.category.toLowerCase());
@@ -94,7 +95,6 @@ function Teach() {
   return (
     <>
       <Header categories={categories} />
-      {/* handle isLofin if not  */}
       <Box
         sx={{
           maxWidth: 500,
@@ -111,8 +111,8 @@ function Teach() {
         </Typography>
 
         <form onSubmit={handleSubmit}>
-          {formData.thumbnail && (
-            <img src={URL.createObjectURL(formData.thumbnail)} alt="image" width='100%' height={180} />
+          {thumbnail && (
+            <img src={URL.createObjectURL(thumbnail)} alt="image" width='100%' height={180} />
           )}
 
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
@@ -126,8 +126,8 @@ function Teach() {
             />
           </Button>
 
-          {formData.video && (
-            <video src={URL.createObjectURL(formData.video)} width='100%' height={180} controls/>
+          {video && (
+            <video src={video} width='100%' height={180} controls />
           )}
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
             Upload Demo Video
@@ -219,10 +219,7 @@ function Teach() {
           </Stack>
         </form>
       </Box>
-
-      <Button>
-        <Link to="/">Home</Link>
-      </Button>
+      <Link to="/" className="home-btn">Home</Link>
     </>
   );
 }
