@@ -289,3 +289,31 @@ module.exports.deleteCardItem = async (req, res) => {
         return res.status(500).json({ message: err.message })
     }
 }
+
+module.exports.getGuestCart = async (req, res) => {
+    const { ids } = req.body;
+    console.log(ids);
+    try {
+        if (!ids) {
+            return res.status(200).json({ messgae: 'no id' })
+        }
+        const data = await Course.find({ _id: { $in: ids } }).populate('userId', 'name profession')
+        console.log(data);
+        return res.status(200).json(data);
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.addGuestCart = async (req, res) => {
+    const { ids, userId } = req.body;
+    try {
+        await User.findByIdAndUpdate(userId,
+            { $addToSet: { cart: ids } },
+            { new: true }
+        )
+        res.status(200).json({ message: 'added cart' })
+    } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}

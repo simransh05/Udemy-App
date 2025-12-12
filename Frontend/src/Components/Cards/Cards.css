@@ -1,3 +1,44 @@
+.parent-container {
+    position: relative;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.previous,
+.next {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    color: black;
+    background: white;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 999;
+}
+
+.previous {
+    left: 5px;
+}
+
+.next {
+    right: 5px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-auto-rows: auto;
+    gap: 20px;
+    height: 300px; 
+    margin:0 15px;   
+}
+
 .paper-wrapper {
     position: absolute;
     top: 50%;

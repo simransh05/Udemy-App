@@ -22,6 +22,7 @@ function Teach() {
   const { categories } = useContext(categoryContext);
   const [video, setVideo] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
+  const [preview, setPreview] = useState('')
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -49,7 +50,8 @@ function Teach() {
     if (name === "thumbnail") {
       setThumbnail(files[0]);
     } else if (name === 'video') {
-      setVideo(URL.createObjectURL(files[0]));
+      setVideo(files[0]);
+      setPreview(URL.createObjectURL(files[0]))
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -79,11 +81,11 @@ function Teach() {
       const user = JSON.parse(localStorage.getItem("login-info"));
       data.append("userId", user?._id);
 
-      // console.log("final FormData:", [...data]);
+      console.log("final FormData:", [...data]);
 
       const res = await api.postCard(data);
 
-      // console.log("Course Created:", res.data);
+      console.log("Course Created:", res.data);
       navigate('/')
 
     } catch (error) {
@@ -126,8 +128,8 @@ function Teach() {
             />
           </Button>
 
-          {video && (
-            <video src={video} width='100%' height={180} controls />
+          {preview && (
+            <video src={preview} width='100%' height={180} controls />
           )}
           <Button variant="contained" component="label" fullWidth sx={{ mb: 2 }}>
             Upload Demo Video

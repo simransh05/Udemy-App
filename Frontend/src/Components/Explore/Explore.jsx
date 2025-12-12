@@ -31,7 +31,7 @@ function Explore({ categories }) {
             onMouseLeave={handleCloseMenu}
             sx={{ position: "relative", display: "inline-block" }}
         >
-            <Button sx={{ textTransform: "none", fontSize: "16px" }}>
+            <Button sx={{ textTransform: "none", fontSize: "16px", color: 'black' }}>
                 Explore
             </Button>
 

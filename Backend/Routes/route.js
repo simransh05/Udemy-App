@@ -41,4 +41,8 @@ router.delete('/learn', controller.deleteLearnItem);
 
 router.delete('/:cardId', controller.deleteCardItem);
 
+router.post('/guest', controller.getGuestCart);
+
+router.post('/login-guest' , controller.addGuestCart)
+
 module.exports = router;

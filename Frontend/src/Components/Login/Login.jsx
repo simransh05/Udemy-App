@@ -53,13 +53,21 @@ function Login() {
 
         try {
             const res = await api.postLogin(formData);
-
+            // while login take all the localstorage 'guest-cart' and then api.addGuestCart which will be having the ids all and store in the user cart add 
             localStorage.setItem(
                 "login-info",
                 JSON.stringify(
                     res.data.exist
                 )
             );
+
+            const cardIds = JSON.parse(localStorage.getItem('guest-cart'));
+            const user = JSON.parse(localStorage.getItem('login-info'));
+            const userId = user._id;
+            if (cardIds) {
+                await api.addGuestCart({ ids: cardIds, userId })
+                localStorage.removeItem('guest-cart')
+            }
             navigate("/");
         } catch (err) {
             if (err.response?.status == "404") {
