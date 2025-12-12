@@ -10,8 +10,17 @@
     top: 50% !important;
     transform: translateY(-50%);
     z-index: 9999 !important;
+
     width: 40px;
     height: 40px;
+    border-radius: 50%;
+    background: wheat;
+    /* border: 1px solid #000; */
+    border: none;
+
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
 }
 
 .slick-prev {
@@ -19,14 +28,28 @@
 }
 
 .slick-next {
-    right: 10px !important
+    right: 10px !important;
 }
 
 .slick-prev:before,
 .slick-next:before {
-    font-size: 40px !important;
-    color: black !important;
-    opacity: 1 !important;
+    content: '' !important;
+}
+
+.slick-prev::after,
+.slick-next::after {
+    font-size: 18px;
+    color: black;
+    display: block;
+    line-height: 1;
+}
+
+.slick-prev::after {
+    content: '<';
+}
+
+.slick-next::after {
+    content: '>';
 }
 
 * {

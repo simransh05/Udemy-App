@@ -37,12 +37,21 @@ function Cards({ title }) {
 
   console.log(fullData)
   const handleCart = async (cardId) => {
+    const user = JSON.parse(localStorage.getItem('login-info'))
+     if (!user) {
+        let guestCart = JSON.parse(localStorage.getItem("guest-cart")) || [];
+
+        if (!guestCart.includes(cardId)) guestCart.push(cardId);
+
+        localStorage.setItem("guest-cart", JSON.stringify(guestCart));
+        toast.success("Added to cart");
+        return;
+    }
     try {
-      const user = JSON.parse(localStorage.getItem('login-info'))
       const userId = user._id;
       const data = { cardId, userId }
       const res = await api.postCart(data);
-      console.log(res.data)
+      // console.log(res.data)
       toast.success('Successfully Added')
     } catch (err) {
       console.log(err.message);
@@ -74,7 +83,7 @@ function Cards({ title }) {
       const formatted = title.toLowerCase().replace(/ /g, "-");
       res = await api.getCards(formatted);
     }
-
+    console.log(res.data.data);
     setFullData(res.data.data);
     setPage(1);
   }
@@ -83,8 +92,12 @@ function Cards({ title }) {
   const paginatedData = fullData.slice(start, start + limit);
 
   return (
-    <div>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${limit}, 1fr)`, gridAutoRows: "auto", gap: "20px", margin: '5px' }}>
+    <div className="parent-container">
+      {page > 1 && <button onClick={() => setPage(page - 1)} className="previous">
+        &lt;
+      </button>}
+      <div style={{ gridTemplateColumns: `repeat(${limit}, 1fr)` }} className="cards-grid">
+
         {fullData.length > 0 && paginatedData.map((card) => (
           <div key={card._id}
             className="card-box"
@@ -94,7 +107,7 @@ function Cards({ title }) {
             <h4>{card.title}</h4>
             <em>{card.description}</em>
             <div className="data">
-              <span style={{gap:'4px'}}>{card.userId.name}</span>, <span>{card.userId.profession}</span>
+              <span style={{ gap: '4px' }}>{card.userId.name}</span>, <span>{card.userId.profession}</span>
             </div>
             <h3>${card.price}</h3>
             {hoveredCard === card._id &&
@@ -115,28 +128,20 @@ function Cards({ title }) {
                 </button>}
               </Paper>
             }
-            {isLogin && user.role != 'learner' &&
+            {isLogin && user.role != 'learner' && (user.role === 'admin' || user._id === card.userId._id) &&
               <div className="delete-btn">
                 <button onClick={() => handleCardDelete(card._id)} >Delete Course</button>
               </div>
             }
           </div>
-
         ))}
       </div>
-
-      <div style={{ marginTop: 20, display: "flex", justifyContent: "center", gap: 10 }}>
-        <button disabled={page === 1} onClick={() => setPage(page - 1)}>
-          Previous
-        </button>
-
-        <button
-          disabled={page >= Math.ceil(fullData.length / limit)}
-          onClick={() => setPage(page + 1)}
-        >
-          Next
-        </button>
-      </div>
+      {page < Math.ceil(fullData.length / limit) && <button
+        onClick={() => setPage(page + 1)}
+        className="next"
+      >
+        &gt;
+      </button>}
     </div>
   );
 }

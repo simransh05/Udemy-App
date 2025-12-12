@@ -9,6 +9,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 import Explore from '../Explore/Explore';
 import api from '../../utils/api';
 import { FiLogOut } from "react-icons/fi";
+import Swal from "sweetalert2";
 
 function Header({ categories }) {
     const { isLogin, setIsLogin } = useContext(loginContext)
@@ -45,11 +46,22 @@ function Header({ categories }) {
     );
 
     const logout = () => {
-        const confirm = window.confirm('Are you sure yu want to Logout');
-        if (confirm) {
-            setIsLogin(false);
-            localStorage.clear();
-        }
+        Swal.fire({
+            title:'Logout',
+            text: 'Are you sure you want to logout?',
+            cancelButtonText: 'No',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            icon: 'warning',
+            reverseButtons:true
+        }).then(result => {
+            if (result.isConfirmed) {
+                setIsLogin(false);
+                localStorage.clear();
+            }
+        }).then(()=>{
+            window.location.href='/'
+        })
     };
 
     return (
@@ -58,7 +70,7 @@ function Header({ categories }) {
             <div className="header-image">
                 <Link to='/'>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyZvP14HBpcaL_rzKBwwhDakccjqhKxzJLag&s"
-                        alt="Udemy" width='75' height='70'  />
+                        alt="Udemy" width='75' height='70' />
                 </Link>
             </div>
 
