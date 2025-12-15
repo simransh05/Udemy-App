@@ -37,12 +37,12 @@ router.post('/learn', controller.postLearn);
 
 router.get('/learn/:userId', controller.getLearn);
 
-router.delete('/learn', controller.deleteLearnItem);
+router.get('/individualLearn/:cardId', controller.getIndividualLearn);
 
 router.delete('/:cardId', controller.deleteCardItem);
 
 router.post('/guest', controller.getGuestCart);
 
-router.post('/login-guest' , controller.addGuestCart)
+router.post('/login-guest', controller.addGuestCart)
 
 module.exports = router;

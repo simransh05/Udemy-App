@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Header/Header'
-import { categoryContext } from '../../App'
+import { categoryContext, counterContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
 const base_url = import.meta.env.VITE_BASE_URL;
 import { toast } from 'react-toastify'
 import './Favorite.css'
+import ROUTES from '../../Constant/Routes';
 
 function Favorite() {
     const { categories } = useContext(categoryContext);
+    const { setCounter } = useContext(counterContext);
     const [fullData, setFullData] = useState([])
     useEffect(() => {
         const getCart = async () => {
@@ -31,6 +33,8 @@ function Favorite() {
             console.log(data)
             await api.postCart(data);
             const res = await api.getFav(userId)
+            setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
+            setCounter((prev) => ({ ...prev, cart: prev.cart + 1 }))
             console.log(res.data);
             setFullData(res.data)
             toast.success('Added in Cart')
@@ -48,6 +52,7 @@ function Favorite() {
             console.log(data)
             await api.deleteFavItem(data);
             const res = await api.getFav(userId)
+            setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
             console.log(res.data);
             setFullData(res.data)
             toast.success(`Removed from your Favorite`);
@@ -62,6 +67,7 @@ function Favorite() {
             const data = { userId, cardId }
             const res = await api.postLearn(data);
             console.log(res.data, res.status)
+            setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
             }
@@ -95,7 +101,7 @@ function Favorite() {
 
                     ))}
                 </> : <>
-                    <Link to='/' className='home'>Explore Some Courses</Link>
+                    <Link to={ROUTES.HOME} className='home'>Explore Some Courses</Link>
                 </>}
             </div>
         </div>

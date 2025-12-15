@@ -257,14 +257,20 @@ module.exports.getLearn = async (req, res) => {
     }
 }
 
-module.exports.deleteLearnItem = async (req, res) => {
-    const { userId, cardId } = req.body;
+module.exports.getIndividualLearn = async (req, res) => {
+    const { cardId } = req.params;
     try {
-        await User.findByIdAndUpdate(
-            userId,
-            { $pull: { learn: cardId } }
-        )
-        return res.status(200).json({ message: 'Successfully Deleted' })
+        const data = await Course.findById(cardId).populate('userId', 'name profession')
+        const format = {
+            name: data.userId?.name,
+            profession: data.userId?.profession,
+            title: data?.title,
+            thumbnail: data?.thumbnail,
+            video: data?.video,
+            rating: data?.rating,
+            description: data?.description
+        }
+        return res.status(200).json(format)
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
@@ -314,6 +320,22 @@ module.exports.addGuestCart = async (req, res) => {
         )
         res.status(200).json({ message: 'added cart' })
     } catch (err) {
+        return res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports.addRating = async (req, res) => {
+    const { value, cardId } = req.body;
+    try {
+        // idea frontend send the value , cardId ,userid
+        // total+=value , count++ and the userid and calculate the average from there and store the userid 
+        // also while post check if that user is already there in backend user array if yes the return 
+
+        // while sending the data in my learning get also send the average of the rating and display it 
+
+        return res.status(200).json({ message: 'successfully added' })
+    }
+    catch (err) {
         return res.status(500).json({ message: err.message })
     }
 }

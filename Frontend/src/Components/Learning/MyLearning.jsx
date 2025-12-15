@@ -5,10 +5,16 @@ import { categoryContext } from '../../App'
 import api from '../../utils/api';
 const base_url = import.meta.env.VITE_BASE_URL;
 import './Learning.css'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import ROUTES from '../../Constant/Routes';
+import RatingModal from '../Modal/RatingModal';
+import { toast } from 'react-toastify';
 function MyLearning() {
   const { categories } = useContext(categoryContext);
   const [fullData, setFullData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  const [id, setID] = useState(null);
 
   useEffect(() => {
     const fetchLearn = async () => {
@@ -21,17 +27,32 @@ function MyLearning() {
     fetchLearn();
   }, [])
 
-  const handleDelete = async (cardId) => {
+  const handleExplore = async (cardId) => {
     try {
-      const user = JSON.parse(localStorage.getItem('login-info'))
-      const userId = user._id;
-      const data = { cardId, userId }
-      await api.deleteLearnItem(data);
-      const res = await api.getLearn(userId)
-      setFullData(res.data)
+      navigate(`${ROUTES.MY_LEARNING}/${cardId}`)
     } catch (err) {
       console.log(err.message)
     }
+  }
+
+  const handleRate = (cardId) => {
+    setOpenModal(true);
+    setID(cardId)
+  }
+
+  const handleSubmit = async (value) => {
+    const data = { value, id }
+    // send value id(cardid) and userid and then store that data in backend and bring the rating on the learning page or home page of cards display the data
+    try {
+      const res = await api.addRating(data);
+      if (res.status === 200) {
+        toast.success('Send the Rating')
+      }
+    } catch (err) {
+      console.log(err.message)
+    }
+
+
   }
   return (
     <>
@@ -41,9 +62,6 @@ function MyLearning() {
           <>
             {fullData.map((item) => (
               <div key={item.id} className='full-container'>
-                <div className='left-side'>
-                  <video src={`${base_url}${item.video}`} className='video-learn' controls poster={`${base_url}${item.thumbnail}`} />
-                </div>
                 <div className='right-side'>
                   <img src={`${base_url}${item.thumbnail}`} alt="image" />
                   <div className='post-info'>
@@ -51,13 +69,20 @@ function MyLearning() {
                   </div>
                   <strong>{item.title}</strong>
                   <p>{item.description}</p>
-                  <button onClick={() => handleDelete(item.id)}>Remove from Learning</button>
+                  <div className="btn-group">
+                    <button onClick={() => handleExplore(item.id)}>Explore Course</button>
+                    <button onClick={() => handleRate(item.id)}>Give Rating</button>
+                    {openModal &&
+                      <RatingModal open={openModal}
+                        onClose={() => setOpenModal(false)}
+                        onSubmit={handleSubmit} />}
+                  </div>
                 </div>
               </div>
             ))}
           </>
           : <>
-            <Link to='/' className='home'>Explore Some Courses</Link>
+            <Link to={ROUTES.HOME} className='home'>Explore Some Courses</Link>
           </>
         }
       </div>
