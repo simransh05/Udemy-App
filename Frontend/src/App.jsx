@@ -13,11 +13,19 @@ import MyLearning from './Components/Learning/MyLearning'
 import BaseCategory from './Components/BaseCategory/BaseCategory'
 import Favorite from './Components/Favorite/Favorite'
 import { ToastContainer } from 'react-toastify'
+import ROUTES from './Constant/Routes'
+import IndividualLearning from './Components/Learning/IndividualLearning'
+import MyCourse from './Components/My_Course/MyCourse'
 
 export const loginContext = createContext();
 export const categoryContext = createContext();
+export const counterContext = createContext();
 function App() {
   const [isLogin, setIsLogin] = useState(false);
+  const [counter, setCounter] = useState({
+    fav: 0,
+    cart: 0,
+  })
   const categories = [
     { name: "Development", sub: ["Web Development", "Mobile Development", "Game Development", "Software Testing"] },
     { name: "Business", sub: ["Entrepreneurship", "Communication", "Management", "Business Strategy"] },
@@ -27,21 +35,25 @@ function App() {
   return (
     <>
       <loginContext.Provider value={{ isLogin, setIsLogin }}>
-        <categoryContext.Provider value={{ categories }}>
-          <Router>
-            <Routes>
-              <Route path='/' element={<HomePage />} />
-              <Route path="/:category" element={<BaseCategory />} />
-              <Route path="/:category/:sub" element={<BaseCategory />} />
-              <Route path='/login' element={<Login />} />
-              <Route path='/signup' element={<Signup />} />
-              <Route path='/teach' element={<Teach />} />
-              <Route path='/cart' element={<Cart />} />
-              <Route path='/my-learning' element={<MyLearning />} />
-              <Route path='/fav' element={<Favorite />} />
-            </Routes>
-          </Router>
-        </categoryContext.Provider>
+        <counterContext.Provider value={{ counter, setCounter }}>
+          <categoryContext.Provider value={{ categories }}>
+            <Router>
+              <Routes>
+                <Route path={ROUTES.HOME} element={<HomePage />} />
+                <Route path="/:category" element={<BaseCategory />} />
+                <Route path="/:category/:sub" element={<BaseCategory />} />
+                <Route path={ROUTES.LOGIN} element={<Login />} />
+                <Route path={ROUTES.SIGNUP} element={<Signup />} />
+                <Route path={ROUTES.TEACH} element={<Teach />} />
+                <Route path={ROUTES.CART} element={<Cart />} />
+                <Route path={ROUTES.MY_LEARNING} element={<MyLearning />} />
+                <Route path={ROUTES.FAV} element={<Favorite />} />
+                <Route path={`${ROUTES.MY_LEARNING}/:cardId`} element={<IndividualLearning />} />
+                <Route path={ROUTES.MY_COURSE} element={<MyCourse />} />
+              </Routes>
+            </Router>
+          </categoryContext.Provider>
+        </counterContext.Provider>
       </loginContext.Provider>
       <ToastContainer position='top-center' autoClose={2000} />
     </>

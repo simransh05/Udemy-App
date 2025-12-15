@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Header/Header'
-import { categoryContext } from '../../App'
+import { categoryContext, counterContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Cart.css'
+import ROUTES from '../../Constant/Routes';
 const base_url = import.meta.env.VITE_BASE_URL;
 function Cart() {
     const navigate = useNavigate();
     const { categories } = useContext(categoryContext);
+    const { setCounter } = useContext(counterContext);
     const [fullData, setFullData] = useState([])
 
     const handleDelete = async (cardId) => {
         try {
             const user = JSON.parse(localStorage.getItem('login-info'))
             console.log(cardId);
-            let res ;
+            let res;
             if (!user) {
                 let cardIds = JSON.parse(localStorage.getItem('guest-cart'))
                 console.log(cardIds);
@@ -29,6 +31,7 @@ function Cart() {
                 await api.deleteCartItem(data);
                 res = await api.getCart(userId)
             }
+            setCounter((prev) => ({ ...prev, cart: prev.cart - 1 }))
             setFullData(res.data)
             toast.success('Removed from the Cart')
         } catch (err) {
@@ -41,7 +44,7 @@ function Cart() {
             const user = JSON.parse(localStorage.getItem('login-info'))
             if (!user) {
                 toast.error('Need to Login First');
-                navigate('/login');
+                navigate(ROUTES.LOGIN);
             }
             const userId = user._id;
             const data = { userId, cardId }
@@ -50,6 +53,7 @@ function Cart() {
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
             }
+            setCounter((prev) => ({ ...prev, cart: prev.cart - 1 }))
             const res1 = await api.getCart(userId);
             setFullData(res1.data)
         } catch (err) {
@@ -100,7 +104,7 @@ function Cart() {
 
                     ))}
                 </> : <>
-                    <Link to='/' className='home'>Explore Some Course</Link>
+                    <Link to={ROUTES.HOME} className='home'>Explore Some Course</Link>
                 </>}
             </div>
         </>

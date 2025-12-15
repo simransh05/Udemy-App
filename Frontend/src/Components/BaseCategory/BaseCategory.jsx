@@ -9,9 +9,16 @@ function BaseCategory() {
     const { category, sub } = useParams();
     const { categories } = useContext(categoryContext);
 
-    // Convert URL to proper names
-    const formattedCategory = category.charAt(0).toUpperCase() + category.slice(1);
+    function formatName(str) {
+        if (!str) return "";
+        return str
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
 
+    const formattedCategory = formatName(category)
+    const formattedSub = formatName(sub)
     const categoryObj = categories.find(
         (c) => c.name.toLowerCase() === formattedCategory.toLowerCase()
     );
@@ -25,7 +32,7 @@ function BaseCategory() {
                 subcategories={categoryObj?.sub || []}
             />
 
-            <h2>Courses</h2>
+            <h2>{sub ? formattedSub : formattedCategory} Courses</h2>
 
             <Cards title={sub ? sub : category} />
         </div>

@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useContext } from "react";
-import { loginContext } from "../../App";
+import { counterContext, loginContext } from "../../App";
 import api from "../../utils/api";
 const base_url = import.meta.env.VITE_BASE_URL;
 import { IoCartOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
 import { Box, Paper } from "@mui/material";
 import { toast } from 'react-toastify'
-import { useNavigate } from "react-router-dom";
 import './Cards.css'
 
 function Cards({ title }) {
   const { isLogin } = useContext(loginContext);
+  const { setCounter } = useContext(counterContext)
 
   const [fullData, setFullData] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -38,19 +38,20 @@ function Cards({ title }) {
   console.log(fullData)
   const handleCart = async (cardId) => {
     const user = JSON.parse(localStorage.getItem('login-info'))
-     if (!user) {
-        let guestCart = JSON.parse(localStorage.getItem("guest-cart")) || [];
+    if (!user) {
+      let guestCart = JSON.parse(localStorage.getItem("guest-cart")) || [];
 
-        if (!guestCart.includes(cardId)) guestCart.push(cardId);
+      if (!guestCart.includes(cardId)) guestCart.push(cardId);
 
-        localStorage.setItem("guest-cart", JSON.stringify(guestCart));
-        toast.success("Added to cart");
-        return;
+      localStorage.setItem("guest-cart", JSON.stringify(guestCart));
+      toast.success("Added to cart");
+      return;
     }
     try {
       const userId = user._id;
       const data = { cardId, userId }
       const res = await api.postCart(data);
+      setCounter((prev) => ({ ...prev, cart: prev.cart + 1 }))
       // console.log(res.data)
       toast.success('Successfully Added')
     } catch (err) {
@@ -65,27 +66,12 @@ function Cards({ title }) {
       const data = { cardId, userId }
       console.log(data)
       await api.postFav(data)
+      setCounter((prev) => ({ ...prev, fav: prev.fav + 1 }))
       toast.success('Successfully Added')
     }
     catch (err) {
       console.log(err.message);
     }
-  }
-  const user = JSON.parse(localStorage.getItem('login-info'));
-
-  const handleCardDelete = async (cardId) => {
-    await api.deleteCardItem(cardId);
-    toast.error('Course deleted')
-    let res;
-    if (!title) {
-      res = await api.getAllCards();
-    } else {
-      const formatted = title.toLowerCase().replace(/ /g, "-");
-      res = await api.getCards(formatted);
-    }
-    console.log(res.data.data);
-    setFullData(res.data.data);
-    setPage(1);
   }
 
   const start = (page - 1) * limit;
@@ -127,11 +113,6 @@ function Cards({ title }) {
                   <MdFavoriteBorder style={{ height: '20px', width: '30px' }} />
                 </button>}
               </Paper>
-            }
-            {isLogin && user.role != 'learner' && (user.role === 'admin' || user._id === card.userId._id) &&
-              <div className="delete-btn">
-                <button onClick={() => handleCardDelete(card._id)} >Delete Course</button>
-              </div>
             }
           </div>
         ))}

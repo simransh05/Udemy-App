@@ -16,6 +16,7 @@ import api from "../../utils/api";
 import Header from "../Header/Header";
 import { toast } from 'react-toastify'
 import './Teach.css'
+import ROUTES from "../../Constant/Routes";
 
 function Teach() {
   const navigate = useNavigate()
@@ -35,11 +36,11 @@ function Teach() {
     const user = JSON.parse(localStorage.getItem('login-info'));
     if (!user) {
       toast.error("Login First!")
-      navigate('/login');
+      navigate(ROUTES.LOGIN);
       return;
     } if (user.role === 'learner') {
       toast.error("Access Denied! Only instructors can create courses.");
-      navigate('/');
+      navigate(ROUTES.HOME);
       return;
     }
   }, [])
@@ -86,7 +87,7 @@ function Teach() {
       const res = await api.postCard(data);
 
       console.log("Course Created:", res.data);
-      navigate('/')
+      navigate(ROUTES.HOME)
 
     } catch (error) {
       console.error(error);
@@ -221,7 +222,7 @@ function Teach() {
           </Stack>
         </form>
       </Box>
-      <Link to="/" className="home-btn">Home</Link>
+      <Link to={ROUTES.HOME} className="home-btn">Home</Link>
     </>
   );
 }

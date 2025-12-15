@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
-import { loginContext } from '../../App';
+import { counterContext, loginContext } from '../../App';
 import { Link } from 'react-router-dom';
-import { TextField, Button } from '@mui/material';
+import { IoMdSearch } from "react-icons/io";
 import './Header.css';
 import { IoCartOutline } from "react-icons/io5";
 import { MdFavoriteBorder } from "react-icons/md";
@@ -10,9 +10,11 @@ import Explore from '../Explore/Explore';
 import api from '../../utils/api';
 import { FiLogOut } from "react-icons/fi";
 import Swal from "sweetalert2";
+import ROUTES from '../../Constant/Routes';
 
 function Header({ categories }) {
     const { isLogin, setIsLogin } = useContext(loginContext)
+    const { counter } = useContext(counterContext);
     const [fullData, setFullData] = useState([])
     const [search, setSearch] = useState('')
 
@@ -47,20 +49,20 @@ function Header({ categories }) {
 
     const logout = () => {
         Swal.fire({
-            title:'Logout',
+            title: 'Logout',
             text: 'Are you sure you want to logout?',
             cancelButtonText: 'No',
             showCancelButton: true,
             confirmButtonText: 'Yes',
             icon: 'warning',
-            reverseButtons:true
+            reverseButtons: true
         }).then(result => {
             if (result.isConfirmed) {
                 setIsLogin(false);
                 localStorage.clear();
             }
-        }).then(()=>{
-            window.location.href='/'
+        }).then(() => {
+            window.location.href = '/'
         })
     };
 
@@ -79,12 +81,14 @@ function Header({ categories }) {
             </div>
 
             <div className="search-box">
+                <IoMdSearch className='search-icon' />
                 <input
                     name="search"
                     type="text"
                     onChange={handleChange}
                     value={search}
                     className="search-input"
+                    placeholder='Search for anything'
                 />
 
                 {search.length > 0 && (
@@ -102,25 +106,35 @@ function Header({ categories }) {
             </div>
 
             <div className='center-flex'>
-                <Link to='/teach' className='link-info'>Teach on Udemy</Link>
+                <Link to={ROUTES.TEACH} className='link-info'>Teach on Udemy</Link>
             </div>
 
             {isLogin && (
                 <div className='center-flex'>
-                    <Link to='/my-learning' className='link-info'>My Learning</Link>
+                    <Link to={ROUTES.MY_LEARNING} className='link-info'>My Learning</Link>
                 </div>
             )}
 
+            {isLogin && getuser.role != 'learner' && <Link to={ROUTES.MY_COURSE} className='link-info'>
+                My Course
+            </Link>}
+
             {isLogin && (
                 <div className='center-flex'>
-                    <Link to='/fav'>
+                    {counter.fav > 0 && <div className='count'>
+                        <div className='counter'>{counter.fav}</div>
+                    </div>}
+                    <Link to={ROUTES.FAV}>
                         <MdFavoriteBorder className="icon-size" />
                     </Link>
                 </div>
             )}
 
             <div className='center-flex'>
-                <Link to='/cart'>
+                {counter.cart > 0 && <div className='count'>
+                    <div className='counter'>{counter.cart}</div>
+                </div>}
+                <Link to={ROUTES.CART}>
                     <IoCartOutline className="icon-size" />
                 </Link>
             </div>
@@ -135,10 +149,10 @@ function Header({ categories }) {
             ) : (
                 <>
                     <div className='center-flex'>
-                        <Link to='/login'>Login</Link>
+                        <Link to={ROUTES.LOGIN}>Login</Link>
                     </div>
                     <div className='center-flex'>
-                        <Link to='/signup'>Signup</Link>
+                        <Link to={ROUTES.SIGNUP}>Signup</Link>
                     </div>
                 </>
             )}

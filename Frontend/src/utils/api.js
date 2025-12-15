@@ -40,8 +40,8 @@ const api = {
     getLearn: async (userId) => {
         return await axios.get(`${base_url}/learn/${userId}`)
     },
-    deleteLearnItem: async (data) => {
-        return await axios.delete(`${base_url}/learn`, { data })
+    getIndividualLearn: async (cardId) => {
+        return await axios.get(`${base_url}/individualLearn/${cardId}`)
     },
     deleteCardItem: async (cardId) => {
         return await axios.delete(`${base_url}/${cardId}`)
@@ -49,9 +49,12 @@ const api = {
     getGuestCart: async (ids) => {
         return await axios.post(`${base_url}/guest`, ids);
     },
-    addGuestCart : async (ids) => {
+    addGuestCart: async (ids) => {
         return await axios.post(`${base_url}/login-guest`, ids);
     },
+    addRating: async (data) => {
+        return await axios.post(`${base_url}/rating`, data);
+    }
 }
 
 export default api;

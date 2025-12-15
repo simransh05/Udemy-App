@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import ROUTES from "../../Constant/Routes";
 
 function Signup() {
     const [formData, setFormData] = useState({ name: "", email: "", password: "", profession: "" });
@@ -75,10 +76,10 @@ function Signup() {
             console.log('here')
             const res = await api.postSignup(formData);
             console.log(res.status)
-            navigate("/login");
+            navigate(ROUTES.LOGIN);
         } catch (err) {
             if (err.response?.status == "404") {
-                navigate("/login");
+                navigate(ROUTES.LOGIN);
             } else {
                 alert(err.response?.data?.message || "Signup failed!");
             }
@@ -202,7 +203,7 @@ function Signup() {
                 </form>
 
                 <Typography mt={2} textAlign="center">
-                    Already have an account? <Link to="/login">Login</Link>
+                    Already have an account? <Link to={ROUTES.LOGIN}>Login</Link>
                 </Typography>
             </Paper>
         </Box>
