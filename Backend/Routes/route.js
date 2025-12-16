@@ -43,6 +43,8 @@ router.delete('/:cardId', controller.deleteCardItem);
 
 router.post('/guest', controller.getGuestCart);
 
-router.post('/login-guest', controller.addGuestCart)
+router.post('/guest', controller.addGuestCart);
+
+router.post('/rating' , controller.addRating)
 
 module.exports = router;

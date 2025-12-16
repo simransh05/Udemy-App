@@ -106,25 +106,26 @@ module.exports.postCart = async (req, res) => {
     try {
         // console.log(cardId, userId)
         const user = await User.findById(userId);
+        let count;
         // console.log(user.fav.includes(cardId))
         if (user.fav.includes(cardId)) {
-            await User.findByIdAndUpdate(
+            count = await User.findByIdAndUpdate(
                 userId,
                 {
                     $pull: { fav: cardId },
                     $addToSet: { cart: cardId }
-                }
+                },{ new: true }
             );
         } else {
-            await User.findByIdAndUpdate(
+            count = await User.findByIdAndUpdate(
                 userId,
                 {
                     $addToSet: { cart: cardId }
-                }
+                },{ new: true }
             );
         }
-
-        return res.json({ message: 'added to cart', data: user.cart })
+        // console.log(count.cart.length)
+        return res.json({ message: 'added to cart', cartCount: count.cart.length })
     } catch (err) {
         return res.status(500).json({ message: err.message })
     }
@@ -134,12 +135,13 @@ module.exports.postFav = async (req, res) => {
     const { cardId, userId } = req.body;
     try {
         const user = await User.findById(userId);
-        await User.findByIdAndUpdate(
+        const count = await User.findByIdAndUpdate(
             userId,
             { $addToSet: { fav: cardId } },
             { new: true }
         );
-        return res.json({ message: 'Added to fav' })
+        // console.log(count.fav.length)
+        return res.json({ message: 'Added to fav', favCount: count.fav.length })
     }
 
     catch (err) {
@@ -248,7 +250,8 @@ module.exports.getLearn = async (req, res) => {
             video: item?.video,
             title: item?.title,
             description: item?.description,
-            thumbnail: item?.thumbnail
+            thumbnail: item?.thumbnail,
+            alreadyRated: item.rating?.users?.some(u => u.toString() === userId.toString())
         }))
         // console.log(format);
         return res.json(format);
@@ -298,13 +301,13 @@ module.exports.deleteCardItem = async (req, res) => {
 
 module.exports.getGuestCart = async (req, res) => {
     const { ids } = req.body;
-    console.log(ids);
+    // console.log(ids);
     try {
         if (!ids) {
             return res.status(200).json({ messgae: 'no id' })
         }
         const data = await Course.find({ _id: { $in: ids } }).populate('userId', 'name profession')
-        console.log(data);
+        // console.log(data);
         return res.status(200).json(data);
     } catch (err) {
         return res.status(500).json({ message: err.message })
@@ -325,15 +328,29 @@ module.exports.addGuestCart = async (req, res) => {
 }
 
 module.exports.addRating = async (req, res) => {
-    const { value, cardId } = req.body;
+    const { value, cardId, userId } = req.body;
+    // console.log(value, cardId, userId);
     try {
-        // idea frontend send the value , cardId ,userid
-        // total+=value , count++ and the userid and calculate the average from there and store the userid 
-        // also while post check if that user is already there in backend user array if yes the return 
+        const course = await Course.findById(cardId);
+        // console.log('course', course);
+        const alreadyRated = course.rating.users.some(
+            u => u.toString() === userId.toString()
+        );
+        if (alreadyRated) {
+            return res.status(404).json({
+                message: "You have already given a rating"
+            });
+        }
+        course.rating.total += value;
+        course.rating.count += 1;
+        course.rating.average = Number(
+            (course.rating.total / course.rating.count).toFixed(1)
+        );
+        course.rating.users.push(userId);
 
-        // while sending the data in my learning get also send the average of the rating and display it 
-
-        return res.status(200).json({ message: 'successfully added' })
+        await course.save();
+        // console.log(course);
+        return res.status(200).json({ message: "Rating added successfully" });
     }
     catch (err) {
         return res.status(500).json({ message: err.message })

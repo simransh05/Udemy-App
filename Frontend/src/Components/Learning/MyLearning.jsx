@@ -14,7 +14,7 @@ function MyLearning() {
   const [fullData, setFullData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigate();
-  const [id, setID] = useState(null);
+  const [cardId, setID] = useState(null);
 
   useEffect(() => {
     const fetchLearn = async () => {
@@ -41,12 +41,19 @@ function MyLearning() {
   }
 
   const handleSubmit = async (value) => {
-    const data = { value, id }
-    // send value id(cardid) and userid and then store that data in backend and bring the rating on the learning page or home page of cards display the data
+    const user = JSON.parse(localStorage.getItem('login-info'));
+    const userId = user._id;
+    const data = { value, cardId, userId }
+    console.log(data)
     try {
       const res = await api.addRating(data);
       if (res.status === 200) {
         toast.success('Send the Rating')
+        const res1 = await api.getLearn(userId);
+        setFullData(res1.data);
+      }
+      if (res.status == 404) {
+        toast.info('Already given rating');
       }
     } catch (err) {
       console.log(err.message)
@@ -59,28 +66,31 @@ function MyLearning() {
       <Header categories={categories} />
       <div className='learner-container'>
         {fullData.length > 0 ?
-          <>
+          <div className='main-individual'>
             {fullData.map((item) => (
               <div key={item.id} className='full-container'>
-                <div className='right-side'>
-                  <img src={`${base_url}${item.thumbnail}`} alt="image" />
-                  <div className='post-info'>
-                    <span>By: {item.name}</span> , <span>{item.profession}</span>
-                  </div>
-                  <strong>{item.title}</strong>
-                  <p>{item.description}</p>
-                  <div className="btn-group">
-                    <button onClick={() => handleExplore(item.id)}>Explore Course</button>
-                    <button onClick={() => handleRate(item.id)}>Give Rating</button>
-                    {openModal &&
-                      <RatingModal open={openModal}
-                        onClose={() => setOpenModal(false)}
-                        onSubmit={handleSubmit} />}
-                  </div>
+                <img src={`${base_url}${item.thumbnail}`} alt="image" />
+                <div className='post-info'>
+                  <span>By: {item.name}</span> , <span>{item.profession}</span>
+                </div>
+                <strong>{item.title}</strong>
+                <p>{item.description}</p>
+                <div className="btn-group">
+                  <button onClick={() => handleExplore(item.id)}>Explore Course</button>
+                  {!item.alreadyRated ? <button onClick={() => handleRate(item.id)}>Give Rating</button> :
+                    <div className="parent-btn">
+                      <div className='already-send'>Rating already sent</div>
+                    </div>
+                  }
+
+                  {openModal &&
+                    <RatingModal open={openModal}
+                      onClose={() => setOpenModal(false)}
+                      onSubmit={handleSubmit} />}
                 </div>
               </div>
             ))}
-          </>
+          </div>
           : <>
             <Link to={ROUTES.HOME} className='home'>Explore Some Courses</Link>
           </>

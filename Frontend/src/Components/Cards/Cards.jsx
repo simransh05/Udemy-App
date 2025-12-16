@@ -7,6 +7,7 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { Box, Paper } from "@mui/material";
 import { toast } from 'react-toastify'
 import './Cards.css'
+import Rating from '@mui/material/Rating';
 
 function Cards({ title }) {
   const { isLogin } = useContext(loginContext);
@@ -27,7 +28,6 @@ function Cards({ title }) {
         const formatted = title.toLowerCase().replace(/ /g, "-");
         res = await api.getCards(formatted);
       }
-
       setFullData(res.data.data);
       setPage(1);
     };
@@ -51,8 +51,7 @@ function Cards({ title }) {
       const userId = user._id;
       const data = { cardId, userId }
       const res = await api.postCart(data);
-      setCounter((prev) => ({ ...prev, cart: prev.cart + 1 }))
-      // console.log(res.data)
+      setCounter((prev) => ({ ...prev, cart: res.data.cartCount }))
       toast.success('Successfully Added')
     } catch (err) {
       console.log(err.message);
@@ -65,8 +64,8 @@ function Cards({ title }) {
       const userId = user._id;
       const data = { cardId, userId }
       console.log(data)
-      await api.postFav(data)
-      setCounter((prev) => ({ ...prev, fav: prev.fav + 1 }))
+      const res = await api.postFav(data)
+      setCounter((prev) => ({ ...prev, fav: res.data.favCount }))
       toast.success('Successfully Added')
     }
     catch (err) {
@@ -95,6 +94,11 @@ function Cards({ title }) {
             <div className="data">
               <span style={{ gap: '4px' }}>{card.userId.name}</span>, <span>{card.userId.profession}</span>
             </div>
+            {card.rating.average === 0 ? <div>No Rating Yet</div> : <Rating
+              value={card.rating.average}
+              precision={0.5}
+              readOnly
+            />}
             <h3>${card.price}</h3>
             {hoveredCard === card._id &&
               <Paper

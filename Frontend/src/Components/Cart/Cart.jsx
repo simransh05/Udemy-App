@@ -80,29 +80,28 @@ function Cart() {
         getCart()
     }, [])
 
-    // console.log(fullData)
-
     return (
         <>
             <Header categories={categories} />
             <div className='cart-container'>
                 {fullData.length > 0 ? <>
-                    {fullData.map((item) => (
-                        <div key={item.id || item._id} className='individual-cart'>
-                            <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
-                            <h4>{item.title}</h4>
-                            <em>{item.description}</em>
-                            <div className="data">
-                                <span style={{ gap: '4px' }}>{item.name || item.userId.name}</span>, <span>{item.profession || item.userId.profession}</span>
+                    <div className="main-individual">
+                        {fullData.map((item) => (
+                            <div key={item.id || item._id} className='individual-cart'>
+                                <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                                <h4>{item.title}</h4>
+                                <em>{item.description}</em>
+                                <div className="data">
+                                    <span style={{ gap: '4px' }}>{item.name || item.userId.name}</span>, <span>{item.profession || item.userId.profession}</span>
+                                </div>
+                                <h3>${item.price}</h3>
+                                <div className="btnGroup">
+                                    <button className='remove-btn1' onClick={() => handleDelete(item.id || item._id)}>Remove</button>
+                                    <button onClick={() => handleProceed(item.id || item._id)} className='add'>Proceed Course</button>
+                                </div>
                             </div>
-                            <h3>${item.price}</h3>
-                            <div className="btnGroup">
-                                <button className='remove-btn1' onClick={() => handleDelete(item.id || item._id)}>Remove</button>
-                                <button onClick={() => handleProceed(item.id || item._id)} className='add'>Proceed Course</button>
-                            </div>
-                        </div>
-
-                    ))}
+                        ))}
+                    </div>
                 </> : <>
                     <Link to={ROUTES.HOME} className='home'>Explore Some Course</Link>
                 </>}

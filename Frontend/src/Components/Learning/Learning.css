@@ -1,17 +1,20 @@
 .learner-container {
+   display: flex;
+    margin: 6px;
+    flex-wrap: wrap;
+}
+
+.main-individual {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    height: 100vh;
-    width: 100%;
 }
 
 .full-container {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    height: 300px;
-    margin: 8px;
-    padding-bottom: 15px;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 6px;
 }
 
 .btn-group {
@@ -20,33 +23,43 @@
     justify-content: space-around;
 }
 
-.left-side {
-    width: 60%;
-}
-
-.video-learn {
+.full-container img {
     width: 100%;
-    height: 100%;
+    height: 50%;
 }
 
-.right-side {
-    border: 1px solid black;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: 90%;
+
+.full-container h4 {
+    margin: 0;
+}
+
+.full-container p {
+    margin: 5px 0px;
+    color: rgb(146, 145, 145);
+}
+
+.full-container h3 {
+    margin: 5px 0;
+}
+
+.btn-remove {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    text-align: center;
+}
+.parent-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.already-send{
+    padding: 9px 5px;
+    border: 1px solid black;
+    color: white;
+    background-color: rgb(105, 105, 224);
 }
 
-.right-side img {
-    width: 100%;
-    height: 180px;
-    margin-bottom: 4px;
-}
-
-.right-side button {
+.full-container button {
     height: 40px;
     width: 45%;
     background-color: red;
@@ -54,13 +67,9 @@
     margin: 3px;
 }
 
-.right-side button:hover {
+.full-container button:hover {
     cursor: pointer;
     background-color: rgb(248, 61, 61);
-}
-
-.right-side p {
-    margin: 0;
 }
 
 .home {

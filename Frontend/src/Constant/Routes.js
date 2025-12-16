@@ -6,7 +6,11 @@ const ROUTES = {
     TEACH:'/teach',
     CART:'/cart',
     FAV:'/fav',
-    MY_COURSE:'/my-course'
+    MY_COURSE:'/my-course',
+    LEARN:'/learn',
+    INDIVIDUAL_LEARN:'/individualLearn',
+    GUEST:'/guest',
+    RATING:'/rating',
 }
 
 export default ROUTES;

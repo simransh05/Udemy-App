@@ -149,10 +149,10 @@ function Header({ categories }) {
             ) : (
                 <>
                     <div className='center-flex'>
-                        <Link to={ROUTES.LOGIN}>Login</Link>
+                        <Link to={ROUTES.LOGIN} className='link-info'>Login</Link>
                     </div>
                     <div className='center-flex'>
-                        <Link to={ROUTES.SIGNUP}>Signup</Link>
+                        <Link to={ROUTES.SIGNUP} className='link-info'>Signup</Link>
                     </div>
                 </>
             )}

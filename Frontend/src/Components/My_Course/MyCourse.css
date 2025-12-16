@@ -1,37 +1,59 @@
+
 .full-my-container {
+   display: flex;
+    margin: 6px;
+    flex-wrap: wrap;
+}
+
+.main-individual {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
 }
 
-.individual-cart {
-    width: 245px;
-    height: 300px;
+.individual-course {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 6px;
 }
 
-.individual-cart img{
-    width:100% ;
+.individual-course img {
+    width: 100%;
     height: 50%;
 }
 
 
-.individual-cart h4 {
+.individual-course h4 {
     margin: 0;
 }
 
-.individual-cart p {
+.individual-course p {
     margin: 5px 0px;
     color: rgb(146, 145, 145);
 }
 
-.individual-cart h3 {
+.individual-course h3 {
     margin: 5px 0;
 }
 
-.individual-cart button{
-    width: 200px;
+.btn-remove {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.teach {
+.remove-btn1{
+    width: 120px;
+}
+
+
+.individual-course button:hover {
+    cursor: pointer;
+    background-color: rgb(248, 61, 61);
+}
+
+.home {
     width: 280px;
     height: 40px;
     background-color: rgb(121, 121, 175);
@@ -41,6 +63,6 @@
     justify-content: center;
     align-items: center;
     text-decoration: none;
-    margin-left: 100%;
+    margin-left: 40%;
     margin-top: 80px;
 }
