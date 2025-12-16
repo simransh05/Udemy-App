@@ -1,3 +1,61 @@
+.fav-container {
+   display: flex;
+    margin: 6px;
+    flex-wrap: wrap;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.individual-fav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 6px;
+}
+
+.individual-fav img {
+    width: 100%;
+    height: 50%;
+}
+
+
+.individual-fav h4 {
+    margin: 0;
+}
+
+.individual-fav p {
+    margin: 5px 0px;
+    color: rgb(146, 145, 145);
+}
+
+.individual-fav h3 {
+    margin: 5px 0;
+}
+
+.btnGroup{
+    display: flex;
+    justify-content: space-around;
+}
+
+.add1{
+    background-color: blueviolet;
+    color: white;
+}
+.remove-btn{
+    width: 40px;
+    background-color: red;
+    color: white;
+}
+
+.individual-fav button:hover {
+    cursor: pointer;
+    background-color: rgb(248, 61, 61);
+}
+
 .home {
     width: 280px;
     height: 40px;
@@ -10,53 +68,4 @@
     text-decoration: none;
     margin-left: 40%;
     margin-top: 80px;
-}
-
-.fav-container {
-    display: flex;
-    margin: 6px;
-    flex-wrap: wrap;
-}
-
-.fav-container h4 {
-    margin: 0;
-}
-
-.fav-container p {
-    margin: 5px 0px;
-    color: rgb(146, 145, 145);
-}
-
-.fav-container h3 {
-    margin: 5px 0;
-}
-
-.fav-container img{
-    width: 250px;
-    height: 200px;
-    margin-top: 8px ;
-}
-
-.data {
-    color: rgb(146, 145, 145);
-    gap: 5px;
-}
-
-.data .name {
-    gap: 4px;
-}
-
-.btnGroup{
-    display: flex;
-    justify-content: space-around;
-}
-
-.add{
-    background-color: blueviolet;
-    color: white;
-}
-.remove-btn{
-    width: 40px;
-    background-color: red;
-    color: white;
 }

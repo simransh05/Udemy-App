@@ -149,21 +149,21 @@ function Signup() {
                         }}
                     />
                     <h4>Password must contains :- </h4>
-                    <ul style={{ fontSize: "13px", marginTop: "5px", paddingLeft: "15px" }}>
+                    <ul style={{ fontSize: "16px", marginTop: "5px", paddingLeft: "15px" }}>
                         <li style={{ color: passwordRules.lower ? "green" : "red", listStyle: 'none' }}>
-                            {passwordRules.lower ? "✔" : "✖"} At least one lowercase letter
+                            {passwordRules.lower ? "✔" : "✖"} <span style={{ color: 'black' }}>At least one lowercase letter</span>
                         </li>
                         <li style={{ color: passwordRules.upper ? "green" : "red", listStyle: 'none' }}>
-                            {passwordRules.upper ? "✔" : "✖"} At least one uppercase letter
+                            {passwordRules.upper ? "✔" : "✖"} <span style={{ color: 'black' }}>At least one uppercase letter </span>
                         </li>
                         <li style={{ color: passwordRules.number ? "green" : "red", listStyle: 'none' }}>
-                            {passwordRules.number ? "✔" : "✖"} At least one number
+                            {passwordRules.number ? "✔" : "✖"} <span style={{ color: 'black' }}>At least one number </span>
                         </li>
                         <li style={{ color: passwordRules.symbol ? "green" : "red", listStyle: 'none' }}>
-                            {passwordRules.symbol ? "✔" : "✖"} At least one special character (# @ % $ ! & *)
+                            {passwordRules.symbol ? "✔" : "✖"} <span style={{ color: 'black' }}>At least one special character (# @ % $ ! & *)</span>
                         </li>
                         <li style={{ color: passwordRules.length ? "green" : "red", listStyle: 'none' }}>
-                            {passwordRules.length ? "✔" : "✖"} Minimum 8 characters
+                            {passwordRules.length ? "✔" : "✖"} <span style={{ color: 'black' }}>Minimum 8 characters </span>
                         </li>
                     </ul>
 

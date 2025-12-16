@@ -38,7 +38,6 @@ function Login() {
 
         try {
             const res = await api.postLogin(formData);
-            // while login take all the localstorage 'guest-cart' and then api.addGuestCart which will be having the ids all and store in the user cart add 
             localStorage.setItem(
                 "login-info",
                 JSON.stringify(

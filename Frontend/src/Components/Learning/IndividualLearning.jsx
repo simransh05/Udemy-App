@@ -9,7 +9,6 @@ import ROUTES from '../../Constant/Routes';
 function IndividualLearning() {
     const { cardId } = useParams();
     const navigate = useNavigate();
-    // get the data from backend for individual by when click explore api for explore get by id the info of the card
     const { categories } = useContext(categoryContext);
     const [fullData, setFullData] = useState({})
 
@@ -25,28 +24,27 @@ function IndividualLearning() {
 
     console.log(fullData)
     return (
-        <div>
+        <>
             <Header categories={categories} />
-            <div className='learner-container'>
-
-                <div key={fullData.id} className='full-container'>
-                    <div className='left-side'>
-                        <video src={`${base_url}${fullData.video}`} className='video-learn' controls poster={`${base_url}${fullData.thumbnail}`} />
-                    </div>
-                    <div className='right-side'>
-                        <img src={`${base_url}${fullData.thumbnail}`} alt="image" />
-                        <div className='post-info'>
-                            <span>By: {fullData.name}</span> , <span>{fullData.profession}</span>
-                        </div>
-                        <strong>{fullData.title}</strong>
-                        <p>{fullData.description}</p>
-                    </div>
+            <div className='info-container'>
+                <div className='left-side'>
+                    <video src={`${base_url}${fullData.video}`} className='video-learn' controls poster={`${base_url}${fullData.thumbnail}`} />
                 </div>
+                <div className='right-side'>
+                    <img src={`${base_url}${fullData.thumbnail}`} alt="image" />
+                    <div className='post-info'>
+                        <span>By: {fullData.name}</span> , <span>{fullData.profession}</span>
+                    </div>
+                    <strong>{fullData.title}</strong>
+                    <p>{fullData.description}</p>
+                </div>
+            </div>
+            <div className="display-btn">
                 <button onClick={() => navigate(ROUTES.MY_LEARNING)}>
                     Back
                 </button>
             </div>
-        </div>
+        </>
     )
 }
 
