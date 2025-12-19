@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Box, Button, MenuItem } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { categoryContext } from "../../App";
 
 
-function Explore({ categories }) {
+function Explore() {
     const [open, setOpen] = useState(false);
     const [currentSubList, setCurrentSubList] = useState([]);
     const [currentCategory, setCurrentCategory] = useState(null);
+    const { categories } = useContext(categoryContext);
 
     const handleOpenMenu = () => {
         setOpen(true);

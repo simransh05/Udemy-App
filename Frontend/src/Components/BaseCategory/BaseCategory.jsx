@@ -25,7 +25,7 @@ function BaseCategory() {
 
     return (
         <div>
-            <Header categories={categories} />
+            <Header />
 
             <Heading
                 title={formattedCategory}

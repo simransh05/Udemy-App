@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './Components/Home/HomePage'
 import Login from './Components/Login/Login'
@@ -16,12 +16,13 @@ import { ToastContainer } from 'react-toastify'
 import ROUTES from './Constant/Routes'
 import IndividualLearning from './Components/Learning/IndividualLearning'
 import MyCourse from './Components/My_Course/MyCourse'
+import api from './utils/api'
 
 export const loginContext = createContext();
 export const categoryContext = createContext();
 export const counterContext = createContext();
 function App() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
   const [counter, setCounter] = useState({
     fav: 0,
     cart: 0,
@@ -32,9 +33,26 @@ function App() {
     { name: "Design", sub: ["Web Design", "3D & Animation", "Game Design", "Design Tools"] },
     { name: "Health", sub: ["Sports", "Yoga", "Mental Health", "Nutrition"] }
   ];
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await api.getUser();
+        if (res.status === 200 && res.data && res.data._id) {
+          setCurrentUser(res.data);
+        } else {
+          setCurrentUser(null);
+        }
+      } catch (err) {
+        setCurrentUser(null);
+      }
+    };
+    fetchUser()
+  }, []);
+
   return (
     <>
-      <loginContext.Provider value={{ isLogin, setIsLogin }}>
+      <loginContext.Provider value={{ currentUser, setCurrentUser }}>
         <counterContext.Provider value={{ counter, setCounter }}>
           <categoryContext.Provider value={{ categories }}>
             <Router>
@@ -55,7 +73,7 @@ function App() {
           </categoryContext.Provider>
         </counterContext.Provider>
       </loginContext.Provider>
-      <ToastContainer position='top-center' autoClose={2000} />
+      <ToastContainer position='top-right' autoClose={2000} />
     </>
   )
 }

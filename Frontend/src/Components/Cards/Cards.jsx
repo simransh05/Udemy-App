@@ -10,14 +10,14 @@ import './Cards.css'
 import Rating from '@mui/material/Rating';
 
 function Cards({ title }) {
-  const { isLogin } = useContext(loginContext);
+  const { currentUser } = useContext(loginContext);
   const { setCounter } = useContext(counterContext)
 
   const [fullData, setFullData] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [page, setPage] = useState(1);
 
-  const limit = isLogin ? 5 : 4;
+  const limit = currentUser ? 5 : 4;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,8 +37,7 @@ function Cards({ title }) {
 
   console.log(fullData)
   const handleCart = async (cardId) => {
-    const user = JSON.parse(localStorage.getItem('login-info'))
-    if (!user) {
+    if (!currentUser) {
       let guestCart = JSON.parse(localStorage.getItem("guest-cart")) || [];
 
       if (!guestCart.includes(cardId)) guestCart.push(cardId);
@@ -48,7 +47,7 @@ function Cards({ title }) {
       return;
     }
     try {
-      const userId = user._id;
+      const userId = currentUser._id;
       const data = { cardId, userId }
       const res = await api.postCart(data);
       setCounter((prev) => ({ ...prev, cart: res.data.cartCount }))
@@ -60,8 +59,7 @@ function Cards({ title }) {
 
   const handleFav = async (cardId) => {
     try {
-      const user = JSON.parse(localStorage.getItem('login-info'))
-      const userId = user._id;
+      const userId = currentUser._id;
       const data = { cardId, userId }
       console.log(data)
       const res = await api.postFav(data)
@@ -111,7 +109,7 @@ function Cards({ title }) {
                 >
                   <IoCartOutline style={{ height: '20px', width: '30px' }} />
                 </button>
-                {isLogin && <button style={{ border: 'none', width: '60px', height: '50px', borderTop: "1px solid black", cursor: 'pointer' }}
+                {currentUser && <button style={{ border: 'none', width: '60px', height: '50px', borderTop: "1px solid black", cursor: 'pointer' }}
                   onClick={() => handleFav(card._id)}
                 >
                   <MdFavoriteBorder style={{ height: '20px', width: '30px' }} />

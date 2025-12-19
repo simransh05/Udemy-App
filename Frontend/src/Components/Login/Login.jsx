@@ -21,7 +21,7 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const { setIsLogin } = useContext(loginContext)
+    const { currentUser, setCurrentUser } = useContext(loginContext)
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -29,25 +29,19 @@ function Login() {
     }
 
     useEffect(() => {
-        const alreadyUser = localStorage.getItem("login-info");
+        const alreadyUser = currentUser;
         if (alreadyUser) navigate(ROUTES.HOME);
-    }, []);
+    }, [currentUser]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
 
         try {
             const res = await api.postLogin(formData);
-            localStorage.setItem(
-                "login-info",
-                JSON.stringify(
-                    res.data.exist
-                )
-            );
+            setCurrentUser(res.data.exist);
 
             const cardIds = JSON.parse(localStorage.getItem('guest-cart'));
-            const user = JSON.parse(localStorage.getItem('login-info'));
-            const userId = user._id;
+            const userId = res.data.exist._id
             if (cardIds) {
                 await api.addGuestCart({ ids: cardIds, userId })
                 localStorage.removeItem('guest-cart')
@@ -62,10 +56,19 @@ function Login() {
         }
     };
     useEffect(() => {
-        const info = localStorage.getItem("login-info");
-        if (info) {
-            setIsLogin(true);
-        }
+        const fetchUser = async () => {
+            try {
+                const res = await api.getUser();
+                if (res.status === 200 && res.data && res.data._id) {
+                    setCurrentUser(res.data);
+                } else {
+                    setCurrentUser(null);
+                }
+            } catch (err) {
+                setCurrentUser(null);
+            }
+        };
+        fetchUser()
     }, []);
 
     return (

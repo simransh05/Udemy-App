@@ -11,6 +11,8 @@ const ROUTES = {
     INDIVIDUAL_LEARN:'/individualLearn',
     GUEST:'/guest',
     RATING:'/rating',
+    LOGOUT:'/logout',
+    USER:'/user'
 }
 
 export default ROUTES;

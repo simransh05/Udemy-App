@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import "./SubHeader.css";
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { categoryContext } from "../../App";
 
-function SubHeader({ categories }) {
+function SubHeader() {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const {categories} = useContext(categoryContext)
 
   const handleEnter = (cat) => {
     setSelectedCategory(cat);
