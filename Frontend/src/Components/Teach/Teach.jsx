@@ -11,7 +11,7 @@ import {
   Select
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { categoryContext } from "../../App";
+import { categoryContext, loginContext } from "../../App";
 import api from "../../utils/api";
 import Header from "../Header/Header";
 import { toast } from 'react-toastify'
@@ -21,6 +21,7 @@ import ROUTES from "../../Constant/Routes";
 function Teach() {
   const navigate = useNavigate()
   const { categories } = useContext(categoryContext);
+  const { currentUser } = useContext(loginContext)
   const [video, setVideo] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [preview, setPreview] = useState('')
@@ -33,7 +34,8 @@ function Teach() {
   });
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('login-info'));
+    const res = api.getUser();
+    const user = res.data;
     if (!user) {
       toast.error("Login First!")
       navigate(ROUTES.LOGIN);
@@ -79,8 +81,7 @@ function Teach() {
       );
       data.append("price", formData.price);
 
-      const user = JSON.parse(localStorage.getItem("login-info"));
-      data.append("userId", user?._id);
+      data.append("userId", currentUser?._id);
 
       console.log("final FormData:", [...data]);
 
@@ -97,7 +98,7 @@ function Teach() {
 
   return (
     <>
-      <Header categories={categories} />
+      <Header/>
       <Box
         sx={{
           maxWidth: 500,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Header/Header'
-import { categoryContext, counterContext } from '../../App'
+import { categoryContext, counterContext, loginContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
@@ -10,13 +10,12 @@ import './Favorite.css'
 import ROUTES from '../../Constant/Routes';
 
 function Favorite() {
-    const { categories } = useContext(categoryContext);
     const { setCounter } = useContext(counterContext);
+    const { currentUser, setCurrentUser } = useContext(loginContext) 
     const [fullData, setFullData] = useState([])
     useEffect(() => {
         const getCart = async () => {
-            const user = JSON.parse(localStorage.getItem('login-info'))
-            const userId = user._id;
+            const userId = currentUser._id;
             const res = await api.getFav(userId)
             console.log(res.data);
             setFullData(res.data)
@@ -27,8 +26,7 @@ function Favorite() {
 
     const handleCart = async (cardId) => {
         try {
-            const user = JSON.parse(localStorage.getItem('login-info'))
-            const userId = user._id;
+            const userId = currentUser._id;
             const data = { cardId, userId }
             console.log(data)
             await api.postCart(data);
@@ -46,8 +44,7 @@ function Favorite() {
 
     const handleDelete = async (cardId) => {
         try {
-            const user = JSON.parse(localStorage.getItem('login-info'))
-            const userId = user._id;
+            const userId = currentUser._id;
             const data = { cardId, userId }
             console.log(data)
             await api.deleteFavItem(data);
@@ -62,8 +59,7 @@ function Favorite() {
     }
     const handleProceed = async (cardId) => {
         try {
-            const user = JSON.parse(localStorage.getItem('login-info'))
-            const userId = user._id;
+            const userId = currentUser._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
             console.log(res.data, res.status)
@@ -80,7 +76,7 @@ function Favorite() {
 
     return (
         <div>
-            <Header categories={categories} />
+            <Header />
             <div className='fav-container'>
                 {fullData.length > 0 ? <>
                     <div className="main-container">

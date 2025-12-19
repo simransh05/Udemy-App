@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Header/Header'
 import { useContext } from 'react'
-import { categoryContext } from '../../App'
+import { categoryContext, loginContext } from '../../App'
 import api from '../../utils/api';
 const base_url = import.meta.env.VITE_BASE_URL;
 import './Learning.css'
@@ -10,16 +10,15 @@ import ROUTES from '../../Constant/Routes';
 import RatingModal from '../Modal/RatingModal';
 import { toast } from 'react-toastify';
 function MyLearning() {
-  const { categories } = useContext(categoryContext);
   const [fullData, setFullData] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const { currentUser } = useContext(loginContext) 
   const navigate = useNavigate();
   const [cardId, setID] = useState(null);
 
   useEffect(() => {
     const fetchLearn = async () => {
-      const user = JSON.parse(localStorage.getItem('login-info'));
-      const userId = user._id;
+      const userId = currentUser._id;
       const res = await api.getLearn(userId);
       console.log(res.data)
       setFullData(res.data);
@@ -41,8 +40,7 @@ function MyLearning() {
   }
 
   const handleSubmit = async (value) => {
-    const user = JSON.parse(localStorage.getItem('login-info'));
-    const userId = user._id;
+    const userId = currentUser._id;
     const data = { value, cardId, userId }
     console.log(data)
     try {
@@ -63,7 +61,7 @@ function MyLearning() {
   }
   return (
     <>
-      <Header categories={categories} />
+      <Header />
       <div className='learner-container'>
         {fullData.length > 0 ?
           <div className='main-individual'>

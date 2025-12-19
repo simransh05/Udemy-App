@@ -19,7 +19,7 @@ const courseSchema = new mongoose.Schema({
         require: true
     },
     thumbnail: {
-        type: String,
+        type: Buffer,
         require: true
     },
     price: {
@@ -31,7 +31,7 @@ const courseSchema = new mongoose.Schema({
         require: true
     },
     video: {
-        type: String,
+        type: Buffer,
         require: true
     },
     rating: {

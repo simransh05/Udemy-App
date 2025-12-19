@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import api from '../../utils/api';
 import Header from '../Header/Header';
-import { categoryContext } from '../../App';
+import { categoryContext, loginContext } from '../../App';
 import { Link } from 'react-router-dom';
 const base_url = import.meta.env.VITE_BASE_URL;
 import './MyCourse.css'
@@ -10,16 +10,21 @@ import ROUTES from '../../Constant/Routes';
 
 function MyCourse() {
     const [fullData, setFormData] = useState([]);
-    const { categories } = useContext(categoryContext)
-    const user = JSON.parse(localStorage.getItem('login-info'));
-    const userId = user._id;
+    const { currentUser } = useContext(loginContext) 
+    const userId = currentUser._id;
+    const role = user.role;
     useEffect(() => {
         const fetchData = async () => {
             const res = await api.getAllCards();
             console.log(res.data)
-            const data = res.data.data.filter(
-                val => userId === val?.userId?._id
-            );
+            let data;
+            if (role === 'admin') {
+                data = res.data.data;
+            } else if (role === 'creator') {
+                data = res.data.data.filter(
+                    val => userId === val?.userId?._id
+                );
+            }
             setFormData(data);
         };
 
@@ -31,10 +36,14 @@ function MyCourse() {
             await api.deleteCardItem(cardId);
             toast.error('Course deleted')
             const res = await api.getAllCards();
-            console.log(res.data)
-            const data = res.data.data.filter(
-                val => userId === val?.userId?._id
-            );
+            let data;
+            if (role === 'admin') {
+                data = res.data.data;
+            } else if (role === 'creator') {
+                data = res.data.data.filter(
+                    val => userId === val?.userId?._id
+                );
+            }
             setFormData(data);
         } catch (err) {
             console.log(err.message)
@@ -43,7 +52,7 @@ function MyCourse() {
     }
     return (
         <>
-            <Header categories={categories} />
+            <Header />
             <div className="full-my-container">
                 {fullData.length > 0 ?
                     <div className="main-individual">

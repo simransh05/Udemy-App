@@ -3,10 +3,11 @@ const router = express.Router()
 const controller = require('../Controller/postUser')
 const multer = require('multer');
 const upload = multer({
-    dest: 'upload/', limits: {
-        fileSize: 50 * 1024 * 1024,
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 15 * 1024 * 1024,
     }
-})
+});
 
 router.post('/signup', controller.postSignup);
 
@@ -45,6 +46,10 @@ router.post('/guest', controller.getGuestCart);
 
 router.post('/guest', controller.addGuestCart);
 
-router.post('/rating' , controller.addRating)
+router.post('/rating', controller.addRating);
+
+router.post('/logout' , controller.logout);
+
+router.get('/user' , controller.getUser)
 
 module.exports = router;

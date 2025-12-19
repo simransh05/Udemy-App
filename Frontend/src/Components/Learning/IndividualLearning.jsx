@@ -9,7 +9,6 @@ import ROUTES from '../../Constant/Routes';
 function IndividualLearning() {
     const { cardId } = useParams();
     const navigate = useNavigate();
-    const { categories } = useContext(categoryContext);
     const [fullData, setFullData] = useState({})
 
     useEffect(() => {
@@ -25,7 +24,7 @@ function IndividualLearning() {
     console.log(fullData)
     return (
         <>
-            <Header categories={categories} />
+            <Header />
             <div className='info-container'>
                 <div className='left-side'>
                     <video src={`${base_url}${fullData.video}`} className='video-learn' controls poster={`${base_url}${fullData.thumbnail}`} />

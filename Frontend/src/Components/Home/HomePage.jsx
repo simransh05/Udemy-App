@@ -12,14 +12,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slide2 from '../Slides/Slide2';
 import './HomePage.css'
 function HomePage() {
-    const { isLogin, setIsLogin } = useContext(loginContext);
-
-    const categories = [
-        { name: "Development", sub: ["Web Development", "Mobile Development", "Game Development", "Software Testing"] },
-        { name: "Business", sub: ["Entrepreneurship", "Communication", "Management", "Business Strategy"] },
-        { name: "Design", sub: ["Web Design", "3D & Animation", "Game Design", "Design Tools"] },
-        { name: "Health", sub: ["Sports", "Yoga", "Mental Health", "Nutrition"] }
-    ];
+    const { currentUser } = useContext(loginContext)
 
     const settings = {
         dots: true,
@@ -32,18 +25,11 @@ function HomePage() {
         arrows: true,
     };
 
-    useEffect(() => {
-        const info = localStorage.getItem("login-info");
-        if (info) {
-            setIsLogin(true);
-        }
-    }, []);
-
     return (
         <div>
-            <Header categories={categories} />
+            <Header />
 
-            {isLogin && <SubHeader categories={categories} />}
+            {currentUser && <SubHeader />}
 
             <div className="container-slider">
                 <Slider {...settings}>
@@ -54,7 +40,7 @@ function HomePage() {
                     <Slide1 />
                 </Slider>
             </div>
-            {isLogin && <Cards />}
+            {currentUser && <Cards />}
         </div >
     )
 }

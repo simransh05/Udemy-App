@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../Header/Header'
-import { categoryContext, counterContext } from '../../App'
+import { categoryContext, counterContext, loginContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,23 +10,22 @@ import ROUTES from '../../Constant/Routes';
 const base_url = import.meta.env.VITE_BASE_URL;
 function Cart() {
     const navigate = useNavigate();
-    const { categories } = useContext(categoryContext);
     const { setCounter } = useContext(counterContext);
+    const { currentUser, setCurrentUser } = useContext(loginContext)
     const [fullData, setFullData] = useState([])
 
     const handleDelete = async (cardId) => {
         try {
-            const user = JSON.parse(localStorage.getItem('login-info'))
             console.log(cardId);
             let res;
-            if (!user) {
+            if (!currentUser) {
                 let cardIds = JSON.parse(localStorage.getItem('guest-cart'))
                 console.log(cardIds);
                 cardIds = cardIds.filter(item => item !== cardId);
                 localStorage.setItem('guest-cart', JSON.stringify(cardIds));
                 res = await api.getGuestCart({ ids: cardIds });
             } else {
-                const userId = user._id;
+                const userId = currentUser._id;
                 const data = { cardId, userId }
                 await api.deleteCartItem(data);
                 res = await api.getCart(userId)
@@ -41,12 +40,11 @@ function Cart() {
 
     const handleProceed = async (cardId) => {
         try {
-            const user = JSON.parse(localStorage.getItem('login-info'))
-            if (!user) {
+            if (!currentUser) {
                 toast.error('Need to Login First');
                 navigate(ROUTES.LOGIN);
             }
-            const userId = user._id;
+            const userId = currentUser._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
             console.log(res.data, res.status)
@@ -63,14 +61,13 @@ function Cart() {
 
     useEffect(() => {
         const getCart = async () => {
-            const user = JSON.parse(localStorage.getItem('login-info'))
             let res;
-            if (!user) {
+            if (!currentUser) {
                 const cardIds = JSON.parse(localStorage.getItem('guest-cart'))
                 console.log(cardIds);
                 res = await api.getGuestCart({ ids: cardIds });
             } else {
-                const userId = user._id;
+                const userId = currentUser._id;
                 res = await api.getCart(userId)
             }
             console.log(res.data);
@@ -82,7 +79,7 @@ function Cart() {
 
     return (
         <>
-            <Header categories={categories} />
+            <Header />
             <div className='cart-container'>
                 {fullData.length > 0 ? <>
                     <div className="main-individual">

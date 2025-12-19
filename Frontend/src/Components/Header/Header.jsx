@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { counterContext, loginContext } from '../../App';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoMdSearch } from "react-icons/io";
 import './Header.css';
 import { IoCartOutline } from "react-icons/io5";
@@ -12,11 +12,12 @@ import { FiLogOut } from "react-icons/fi";
 import Swal from "sweetalert2";
 import ROUTES from '../../Constant/Routes';
 
-function Header({ categories }) {
-    const { isLogin, setIsLogin } = useContext(loginContext)
+function Header() {
+    const { currentUser ,setCurrentUser} = useContext(loginContext)
     const { counter } = useContext(counterContext);
     const [fullData, setFullData] = useState([])
     const [search, setSearch] = useState('')
+    const navigate = useNavigate()
 
     const getInitials = (name) => {
         if (!name) return "";
@@ -24,13 +25,6 @@ function Header({ categories }) {
         if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
         return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
     };
-
-    const getuser = JSON.parse(localStorage.getItem('login-info'));
-
-    useEffect(() => {
-        const info = localStorage.getItem("login-info");
-        if (info) setIsLogin(true);
-    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -47,8 +41,8 @@ function Header({ categories }) {
         card.description.toLowerCase().includes(search.toLowerCase())
     );
 
-    const logout = () => {
-        Swal.fire({
+    const logout = async () => {
+        const result = await Swal.fire({
             title: 'Logout',
             text: 'Are you sure you want to logout?',
             cancelButtonText: 'No',
@@ -56,15 +50,15 @@ function Header({ categories }) {
             confirmButtonText: 'Yes',
             icon: 'warning',
             reverseButtons: true
-        }).then(result => {
-            if (result.isConfirmed) {
-                setIsLogin(false);
-                localStorage.clear();
-            }
-        }).then(() => {
-            window.location.href = '/'
         })
+        if (result.isConfirmed) {
+            await api.logout();
+            setCurrentUser(null)
+            navigate('/');
+        }
     };
+
+    console.log(currentUser)
 
     return (
         <div className='header-container'>
@@ -77,7 +71,7 @@ function Header({ categories }) {
             </div>
 
             <div className="center-flex">
-                <Explore categories={categories} />
+                <Explore />
             </div>
 
             <div className="search-box">
@@ -109,17 +103,17 @@ function Header({ categories }) {
                 <Link to={ROUTES.TEACH} className='link-info'>Teach on Udemy</Link>
             </div>
 
-            {isLogin && (
+            {currentUser && (
                 <div className='center-flex'>
                     <Link to={ROUTES.MY_LEARNING} className='link-info'>My Learning</Link>
                 </div>
             )}
 
-            {isLogin && getuser.role != 'learner' && <Link to={ROUTES.MY_COURSE} className='link-info'>
+            {currentUser && currentUser.role != 'learner' && <Link to={ROUTES.MY_COURSE} className='link-info'>
                 My Course
             </Link>}
 
-            {isLogin && (
+            {currentUser && (
                 <div className='center-flex'>
                     {counter.fav > 0 && <div className='count'>
                         <div className='counter'>{counter.fav}</div>
@@ -139,9 +133,9 @@ function Header({ categories }) {
                 </Link>
             </div>
 
-            {isLogin ? (
+            {currentUser ? (
                 <>
-                    <div className="initials">{getInitials(getuser.name)}</div>
+                    <div className="initials">{getInitials(currentUser.name)}</div>
                     <button className="logout-btn icon-size" onClick={logout}>
                         <FiLogOut style={{ width: '50px', height: '40px' }} />
                     </button>
