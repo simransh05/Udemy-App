@@ -45,8 +45,8 @@ module.exports.postLogin = async (req, res) => {
         }
         res.cookie("email", exist.email, {
             httpOnly: true,
-            sameSite: 'Lax',
-            secure: false
+            sameSite: 'None',
+            secure: true
         })
         // console.log("exist", exist);
         return res.status(200).json({ message: 'Login Successfully', exist })
@@ -403,8 +403,8 @@ module.exports.logout = async (req, res) => {
     try {
         res.clearCookie("email", {
             httpOnly: true,
-            sameSite: "Lax",
-            secure: false,
+            sameSite: "None",
+            secure: true,
         });
         res.status(200).json({ message: "Logged out successfully" });
     } catch (err) {
