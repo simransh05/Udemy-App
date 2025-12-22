@@ -27,12 +27,9 @@ function Login() {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     }
-
     useEffect(() => {
-        const alreadyUser = currentUser;
-        if (alreadyUser) navigate(ROUTES.HOME);
-    }, [currentUser]);
-
+        if (currentUser) navigate(`${ROUTES.HOME}`)
+    }, [currentUser])
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -55,21 +52,21 @@ function Login() {
             }
         }
     };
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await api.getUser();
-                if (res.status === 200 && res.data && res.data._id) {
-                    setCurrentUser(res.data);
-                } else {
-                    setCurrentUser(null);
-                }
-            } catch (err) {
-                setCurrentUser(null);
-            }
-        };
-        fetchUser()
-    }, []);
+    // useEffect(() => {
+    //     const fetchUser = async () => {
+    //         try {
+    //             const res = await api.getUser();
+    //             if (res.status === 200 && res.data && res.data._id) {
+    //                 setCurrentUser(res.data);
+    //             } else {
+    //                 setCurrentUser(null);
+    //             }
+    //         } catch (err) {
+    //             setCurrentUser(null);
+    //         }
+    //     };
+    //     fetchUser()
+    // }, []);
 
     return (
         <Box display="flex" justifyContent="center" mt={5}>

@@ -3,20 +3,18 @@ import api from '../../utils/api';
 import Header from '../Header/Header';
 import { categoryContext, loginContext } from '../../App';
 import { Link } from 'react-router-dom';
-const base_url = import.meta.env.VITE_BASE_URL;
 import './MyCourse.css'
 import { toast } from 'react-toastify';
 import ROUTES from '../../Constant/Routes';
 
 function MyCourse() {
-    const [fullData, setFormData] = useState([]);
+    const [fullData, setFormData] = useState(null);
     const { currentUser } = useContext(loginContext) 
-    const userId = currentUser._id;
-    const role = user.role;
+    const userId = currentUser?._id;
+    const role = currentUser?.role;
     useEffect(() => {
         const fetchData = async () => {
             const res = await api.getAllCards();
-            console.log(res.data)
             let data;
             if (role === 'admin') {
                 data = res.data.data;
@@ -54,11 +52,11 @@ function MyCourse() {
         <>
             <Header />
             <div className="full-my-container">
-                {fullData.length > 0 ?
+                {fullData ?
                     <div className="main-individual">
                         {fullData.map((item) => (
                             <div key={item._id} className='individual-course'>
-                                <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                                <img src={`${item.thumbnail}`} alt="thumbnail" />
                                 <h4>{item.title}</h4>
                                 <em>{item.description}</em>
 

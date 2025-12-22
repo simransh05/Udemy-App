@@ -48,7 +48,7 @@ module.exports.postLogin = async (req, res) => {
             sameSite: 'Lax',
             secure: false
         })
-        console.log("exist", exist);
+        // console.log("exist", exist);
         return res.status(200).json({ message: 'Login Successfully', exist })
     } catch (err) {
         return res.status(500).json('Internal error', err.message)
@@ -59,12 +59,12 @@ module.exports.postLogin = async (req, res) => {
 module.exports.getUser = async (req, res) => {
     const email = req.cookies.email;
     try {
-        console.log(email)
+        // console.log(email)
         if (!email) {
             return res.status(404).json({ message: 'no cookie avaiable' })
         }
         const user = await User.findOne({ email });
-        console.log(user);
+        // console.log(user);
         return res.status(200).json(user);
     } catch (err) {
         return res.status(500).json('Internal error', err.message)
@@ -101,7 +101,18 @@ module.exports.getCards = async (req, res) => {
                 { subCategory: filter }
             ]
         }).populate('userId', 'name profession')
-        return res.json({ data });
+        // console.log('data', data);
+        const formatted = data.map(course => ({
+            ...course.toObject(),
+            thumbnail: course.thumbnail
+                ? `data:image/png;base64,${course.thumbnail.toString('base64')}`
+                : null,
+            video: course.video
+                ? `data:video/mp4;base64,${course.video.toString('base64')}`
+                : null,
+            userId: course.userId
+        }));
+        return res.json({ data: formatted })
     } catch (err) {
         return res.status(500).json({ message: 'internal error' })
     }
