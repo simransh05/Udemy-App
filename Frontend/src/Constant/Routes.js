@@ -12,7 +12,7 @@ const ROUTES = {
     GUEST:'/guest',
     RATING:'/rating',
     LOGOUT:'/logout',
-    USER:'/user'
+    USER:'/user',
 }
 
 export default ROUTES;

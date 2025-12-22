@@ -3,14 +3,13 @@ import Header from '../Header/Header'
 import { useContext } from 'react'
 import { categoryContext, loginContext } from '../../App'
 import api from '../../utils/api';
-const base_url = import.meta.env.VITE_BASE_URL;
 import './Learning.css'
 import { Link, useNavigate } from 'react-router-dom';
 import ROUTES from '../../Constant/Routes';
 import RatingModal from '../Modal/RatingModal';
 import { toast } from 'react-toastify';
 function MyLearning() {
-  const [fullData, setFullData] = useState([]);
+  const [fullData, setFullData] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const { currentUser } = useContext(loginContext) 
   const navigate = useNavigate();
@@ -20,7 +19,6 @@ function MyLearning() {
     const fetchLearn = async () => {
       const userId = currentUser._id;
       const res = await api.getLearn(userId);
-      console.log(res.data)
       setFullData(res.data);
     }
     fetchLearn();
@@ -42,7 +40,6 @@ function MyLearning() {
   const handleSubmit = async (value) => {
     const userId = currentUser._id;
     const data = { value, cardId, userId }
-    console.log(data)
     try {
       const res = await api.addRating(data);
       if (res.status === 200) {
@@ -63,11 +60,11 @@ function MyLearning() {
     <>
       <Header />
       <div className='learner-container'>
-        {fullData.length > 0 ?
+        {fullData?.length > 0 ?
           <div className='main-individual'>
             {fullData.map((item) => (
               <div key={item.id} className='full-container'>
-                <img src={`${base_url}${item.thumbnail}`} alt="image" />
+                <img src={`${item.thumbnail}`} alt="image" />
                 <div className='post-info'>
                   <span>By: {item.name}</span> , <span>{item.profession}</span>
                 </div>

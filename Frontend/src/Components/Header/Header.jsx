@@ -13,7 +13,7 @@ import Swal from "sweetalert2";
 import ROUTES from '../../Constant/Routes';
 
 function Header() {
-    const { currentUser ,setCurrentUser} = useContext(loginContext)
+    const { currentUser, setCurrentUser } = useContext(loginContext)
     const { counter } = useContext(counterContext);
     const [fullData, setFullData] = useState([])
     const [search, setSearch] = useState('')
@@ -57,8 +57,6 @@ function Header() {
             navigate('/');
         }
     };
-
-    console.log(currentUser)
 
     return (
         <div className='header-container'>

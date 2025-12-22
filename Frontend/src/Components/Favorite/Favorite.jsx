@@ -4,20 +4,18 @@ import { categoryContext, counterContext, loginContext } from '../../App'
 import { useContext } from 'react'
 import api from '../../utils/api';
 import { Link } from 'react-router-dom';
-const base_url = import.meta.env.VITE_BASE_URL;
 import { toast } from 'react-toastify'
 import './Favorite.css'
 import ROUTES from '../../Constant/Routes';
 
 function Favorite() {
     const { setCounter } = useContext(counterContext);
-    const { currentUser, setCurrentUser } = useContext(loginContext) 
-    const [fullData, setFullData] = useState([])
+    const { currentUser, setCurrentUser } = useContext(loginContext)
+    const [fullData, setFullData] = useState(null)
     useEffect(() => {
         const getCart = async () => {
-            const userId = currentUser._id;
+            const userId = currentUser?._id;
             const res = await api.getFav(userId)
-            console.log(res.data);
             setFullData(res.data)
 
         }
@@ -28,12 +26,10 @@ function Favorite() {
         try {
             const userId = currentUser._id;
             const data = { cardId, userId }
-            console.log(data)
             await api.postCart(data);
             const res = await api.getFav(userId)
             setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
             setCounter((prev) => ({ ...prev, cart: prev.cart + 1 }))
-            console.log(res.data);
             setFullData(res.data)
             toast.success('Added in Cart')
         } catch (err) {
@@ -46,11 +42,9 @@ function Favorite() {
         try {
             const userId = currentUser._id;
             const data = { cardId, userId }
-            console.log(data)
             await api.deleteFavItem(data);
             const res = await api.getFav(userId)
             setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
-            console.log(res.data);
             setFullData(res.data)
             toast.success(`Removed from your Favorite`);
         } catch (err) {
@@ -62,7 +56,6 @@ function Favorite() {
             const userId = currentUser._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
-            console.log(res.data, res.status)
             setCounter((prev) => ({ ...prev, fav: prev.fav - 1 }))
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
@@ -78,11 +71,11 @@ function Favorite() {
         <div>
             <Header />
             <div className='fav-container'>
-                {fullData.length > 0 ? <>
+                {fullData?.length > 0 ? <>
                     <div className="main-container">
                         {fullData.map((item) => (
                             <div key={item.id} className='individual-fav'>
-                                <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                                <img src={`${item.thumbnail}`} alt="thumbnail" />
                                 <h4>{item.title}</h4>
                                 <em>{item.description}</em>
                                 <div className="data">

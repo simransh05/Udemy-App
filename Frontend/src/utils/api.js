@@ -1,6 +1,5 @@
 import ROUTES from '../Constant/Routes';
 import apiInstance from './apiInstance';
-const base_url = import.meta.env.VITE_BASE_URL;
 
 const api = {
     postSignup: async (data) => {

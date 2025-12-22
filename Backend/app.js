@@ -4,6 +4,7 @@ require("dotenv").config();
 const mongoose = require('mongoose')
 const cookies = require('cookie-parser')
 const app = express();
+const port = process.env.PORT || 4000;
 
 app.use(cors({
     origin: process.env.BASE_URL, 
@@ -19,7 +20,7 @@ app.use('/',require('./Routes/route'))
 
 mongoose.connect(process.env.MONGO_URL)
   .then(() => {
-    app.listen(4000, () => {
+    app.listen(port, () => {
       console.log(`Server started on port 4000`);
     });
   })

@@ -35,8 +35,8 @@
     display: grid;
     grid-auto-rows: auto;
     gap: 20px;
-    height: 300px; 
-    margin:0 15px;   
+    height: 300px;
+    margin: 0 15px;
 }
 
 .paper-wrapper {
@@ -101,4 +101,17 @@
 
 .data .name {
     gap: 4px;
+}
+
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+}
+
+.loading-text {
+    font-size: 18px;
+    font-weight: 500;
+    color: #6a6f73;
 }

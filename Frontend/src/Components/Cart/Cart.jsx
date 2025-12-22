@@ -7,25 +7,22 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Cart.css'
 import ROUTES from '../../Constant/Routes';
-const base_url = import.meta.env.VITE_BASE_URL;
 function Cart() {
     const navigate = useNavigate();
     const { setCounter } = useContext(counterContext);
     const { currentUser, setCurrentUser } = useContext(loginContext)
-    const [fullData, setFullData] = useState([])
+    const [fullData, setFullData] = useState(null)
 
     const handleDelete = async (cardId) => {
         try {
-            console.log(cardId);
             let res;
             if (!currentUser) {
                 let cardIds = JSON.parse(localStorage.getItem('guest-cart'))
-                console.log(cardIds);
                 cardIds = cardIds.filter(item => item !== cardId);
                 localStorage.setItem('guest-cart', JSON.stringify(cardIds));
                 res = await api.getGuestCart({ ids: cardIds });
             } else {
-                const userId = currentUser._id;
+                const userId = currentUser?._id;
                 const data = { cardId, userId }
                 await api.deleteCartItem(data);
                 res = await api.getCart(userId)
@@ -47,7 +44,6 @@ function Cart() {
             const userId = currentUser._id;
             const data = { userId, cardId }
             const res = await api.postLearn(data);
-            console.log(res.data, res.status)
             if (res.status == 200) {
                 toast.success('Added to Your Learning')
             }
@@ -64,13 +60,11 @@ function Cart() {
             let res;
             if (!currentUser) {
                 const cardIds = JSON.parse(localStorage.getItem('guest-cart'))
-                console.log(cardIds);
                 res = await api.getGuestCart({ ids: cardIds });
             } else {
                 const userId = currentUser._id;
                 res = await api.getCart(userId)
             }
-            console.log(res.data);
             setFullData(res.data)
 
         }
@@ -81,11 +75,11 @@ function Cart() {
         <>
             <Header />
             <div className='cart-container'>
-                {fullData.length > 0 ? <>
+                {fullData?.length > 0 ? <>
                     <div className="main-individual">
                         {fullData.map((item) => (
                             <div key={item.id || item._id} className='individual-cart'>
-                                <img src={`${base_url}${item.thumbnail}`} alt="thumbnail" />
+                                <img src={`${item.thumbnail}`} alt="thumbnail" />
                                 <h4>{item.title}</h4>
                                 <em>{item.description}</em>
                                 <div className="data">

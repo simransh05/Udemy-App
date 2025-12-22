@@ -57,25 +57,20 @@ function Signup() {
 
         if (formData.password !== confirmPassword) {
             setError("Passwords do not match!");
-            console.log('error 1')
             return;
         }
 
         if (!passwordRegex.test(formData.password)) {
-            console.log('error 2')
             alert('invalid type! must be 8–15 characters and include uppercase, lowercase, number, and special character.');
             return;
         }
 
         try {
             if (!isValidEmail(formData.email)) {
-                console.log('error 3')
                 alert("Please enter a valid email!");
                 return;
             }
-            console.log('here')
             const res = await api.postSignup(formData);
-            console.log(res.status)
             navigate(ROUTES.LOGIN);
         } catch (err) {
             if (err.response?.status == "404") {

@@ -34,8 +34,7 @@ function Teach() {
   });
 
   useEffect(() => {
-    const res = api.getUser();
-    const user = res.data;
+    const user = currentUser;
     if (!user) {
       toast.error("Login First!")
       navigate(ROUTES.LOGIN);
@@ -83,11 +82,11 @@ function Teach() {
 
       data.append("userId", currentUser?._id);
 
-      console.log("final FormData:", [...data]);
+      // console.log("final FormData:", [...data]);
 
       const res = await api.postCard(data);
 
-      console.log("Course Created:", res.data);
+      // console.log("Course Created:", res.data);
       navigate(ROUTES.HOME)
 
     } catch (error) {

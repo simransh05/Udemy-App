@@ -9,6 +9,8 @@ const upload = multer({
     }
 });
 
+router.get('/user' , controller.getUser);
+
 router.post('/signup', controller.postSignup);
 
 router.post('/login', controller.postLogin);
@@ -49,7 +51,5 @@ router.post('/guest', controller.addGuestCart);
 router.post('/rating', controller.addRating);
 
 router.post('/logout' , controller.logout);
-
-router.get('/user' , controller.getUser)
 
 module.exports = router;
