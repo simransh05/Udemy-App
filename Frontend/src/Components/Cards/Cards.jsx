@@ -96,7 +96,7 @@ function Cards({ title }) {
                 precision={0.5}
                 readOnly
               />}
-              <h3>₹ {card.price}</h3>
+              <h3>₹{card.price}</h3>
               {hoveredCard === card._id &&
                 <Paper
                   elevation={4}
