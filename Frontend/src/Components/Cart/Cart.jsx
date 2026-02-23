@@ -85,7 +85,7 @@ function Cart() {
                                 <div className="data">
                                     <span style={{ gap: '4px' }}>{item.name || item.userId.name}</span>, <span>{item.profession || item.userId.profession}</span>
                                 </div>
-                                <h3>${item.price}</h3>
+                                <h3>₹{item.price}</h3>
                                 <div className="btnGroup">
                                     <button className='remove-btn1' onClick={() => handleDelete(item.id || item._id)}>Remove</button>
                                     <button onClick={() => handleProceed(item.id || item._id)} className='add'>Proceed Course</button>
