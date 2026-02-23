@@ -65,7 +65,7 @@ function MyCourse() {
                                     <span>{item.userId?.profession}</span>
                                 </div>
 
-                                <h3>₹ {item.price}</h3>
+                                <h3>₹{item.price}</h3>
 
                                 <div className='btn-remove'>
                                     <button
