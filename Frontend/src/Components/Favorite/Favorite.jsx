@@ -81,7 +81,7 @@ function Favorite() {
                                 <div className="data">
                                     <span style={{ gap: '4px' }}>{item.name}</span>, <span>{item.profession}</span>
                                 </div>
-                                <h3>${item.price}</h3>
+                                <h3>₹ {item.price}</h3>
                                 <div className="btnGroup">
                                     <button className='remove-btn' onClick={() => handleDelete(item.id)}>❌</button>
                                     <button onClick={() => handleCart(item.id)} className='add1'>Add to Cart</button>
